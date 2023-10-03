@@ -27,3 +27,17 @@ class GetIngredients(APIView):
         ingredients = recipe.ingredients_set.all()
         serializer = IngredientsSerializer(ingredients, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class GetRecipeDetails(APIView):
+
+    
+    def get(self, request, code, format=None):
+        recipe = get_object_or_404(Recipes, id=code)
+        ingredients = recipe.ingredients_set.all()
+        ingredients_serializer = IngredientsSerializer(ingredients, many=True)
+        recipe_serializer = RecipesSerializer(recipe)
+        data = {
+            'ingredients': ingredients_serializer.data,
+            'recipe': recipe_serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
