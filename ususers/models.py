@@ -1,19 +1,19 @@
 from django.db import models
-# from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
-# class CustomUserManager(BaseUserManager):
-#     def create_user(self, email, name, password=None):
-#         email = self.normalize_email(email)
-#         user = self.model(email=email, name=name)
-#         user.set_password(password)  # Set the password
-#         user.save(using=self._db)
-#         return user
-
-
-# class User(AbstractBaseUser):
-#     email = models.EmailField(unique=True)
-#     name = models.CharField(max_length=255)
-#     password = models.CharField(max_length=128)  # Add a password field
-#     date_joined = models.DateTimeField(auto_now_add=True)
-#     is_admin = models.BooleanField(default=False)
+class User(AbstractUser):
     
+    def __str__(self):
+        return self.email
+    
+    groups = models.ManyToManyField(
+            'auth.Group',
+            related_name='custom_user_groups',
+            blank=True,
+        )
+        
+    user_permissions = models.ManyToManyField(
+            'auth.Permission',
+            related_name='custom_user_user_permissions',
+            blank=True,
+        )
