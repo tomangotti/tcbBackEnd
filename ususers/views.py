@@ -1,17 +1,18 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
-
-from rest_framework import generics, status, permissions
-from rest_framework.views import APIView
+from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
-from .models import User
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+
 from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer
+from rest_framework.views import APIView
+
+
+
 
 
 
@@ -20,14 +21,27 @@ class GetAllUsers(APIView):
 
     def get(self, request, format=None):
         users = User.objects.all()
-        print(users)
         serializer = UserSerializer(users, many=True)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
 
-class CreateNewUser(generics.CreateAPIView):
-    serializer_class = CreateUserSerializer
+
+class CreateNewUser(APIView):
+   def post(self, request, *args, **kwargs):
+        serializer = CreateUserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+
+            if User.objects.filter(username=validated_data['username']).exists() or User.objects.filter(email=validated_data['email']).exists():
+                return Response({'error': 'Username or email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User(username=validated_data['username'], email=validated_data['email'])
+            user.password = make_password(validated_data['password'])
+            user.save()
+
+            return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(ObtainAuthToken):
@@ -40,11 +54,11 @@ class UserLoginView(ObtainAuthToken):
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-class CheckLoggedInView(generics.RetrieveAPIView):
+
+
+class CheckLoggedInView(RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        return({'message': 'User is logged in', 'user_id': user.id})
+        return Response({'message': 'User is logged in', 'user_id': user.id})
