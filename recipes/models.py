@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Recipes(models.Model):
@@ -8,7 +8,7 @@ class Recipes(models.Model):
     instructions = models.CharField(max_length=1000)
     published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=4)
     def __str__ (self):
         return self.name
     
@@ -23,3 +23,8 @@ class ingredients(models.Model):
     def __str__ (self):
         return self.name
     
+
+
+class SavedRecipes(models.Model):
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
