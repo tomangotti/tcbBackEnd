@@ -13,9 +13,6 @@ from rest_framework.views import APIView
 
 
 
-
-
-
 class GetAllUsers(APIView):
     serializer_class = UserSerializer
 
