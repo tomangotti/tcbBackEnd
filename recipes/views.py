@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 
 from .models import Recipes, ingredients, SavedRecipes
-from .serializers import RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer
+from .serializers import RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer
 from django.contrib.auth.models import User
 
 
@@ -42,11 +42,15 @@ class GetRecipeDetails(APIView):
     def get(self, request, code, format=None):
         recipe = get_object_or_404(Recipes, id=code)
         ingredients = recipe.ingredients_set.all()
+        saved_users = recipe.savedrecipes_set.all()
         ingredients_serializer = IngredientsSerializer(ingredients, many=True)
         recipe_serializer = RecipesSerializer(recipe)
+        saved_user_serializer = SavedUsersSerializer(saved_users, many=True)
         data = {
             'ingredients': ingredients_serializer.data,
-            'recipe': recipe_serializer.data
+            'recipe': recipe_serializer.data,
+            'users': saved_user_serializer.data
+            
         }
         return Response(data, status=status.HTTP_200_OK)
     

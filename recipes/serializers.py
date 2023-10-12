@@ -7,10 +7,8 @@ class RecipesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipes
         fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user' )
-
-
+\
 class IngredientsSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = ingredients
         fields = ('id', 'name', 'quantity', 'quantity_type')
@@ -21,3 +19,8 @@ class SavedARecipeSerializer(serializers.ModelSerializer):
         fields = ('user', 'recipe')
         extra_kwargs = {'user': {'required': False}}
 
+class SavedUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavedRecipes
+        fields = ('user',) 
+        extra_kwargs = {'user': {'required': False}}
