@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-
+import json
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -65,10 +65,48 @@ class GetUserSavedRecipes(APIView):
         serializer = RecipesSerializer(recipe_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class PostNewRecipe(APIView):
 
+    def post(self, request, *args, **kwargs):
+        
+        recipe_serializer = RecipesSerializer(data=request.data)
+
+        if recipe_serializer.is_valid():
+            # Extract data from the recipe
+            validated_data = recipe_serializer.validated_data
+            name = validated_data['name']
+            description = validated_data['description']
+            instructions = validated_data['instructions']
+            image = validated_data['image']
+            user = validated_data['user']
+
+            # Create a new recipe
+            newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user)
+            newRecipe.save()
+
+            # Extract ingredients data from the request
+            ingredients_data = json.loads(request.data.get('ingredients', '[]'))  # Parse the JSON string
+            print(ingredients_data)
+            # Now you can process and save ingredients if necessary
+            for ingredient_data in ingredients_data:
+                print(ingredient_data)
+                ingredient = ingredients(
+                    recipe=newRecipe,
+                    name=ingredient_data['name'],
+                    quantity=ingredient_data['quantity'],
+                    quantity_type=ingredient_data['quantity_type']
+                )
+                ingredient.save()
+                
+            newSavedRecipe = SavedRecipes(user=user, recipe=newRecipe)
+            newSavedRecipe.save()
+
+            return Response({'message': 'Recipe and ingredients added successfully.'}, status=status.HTTP_201_CREATED)
+        else:
+            print(recipe_serializer.error_messages)
+            return Response(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-    
+
     
 
 class PostASavedRecipe(APIView):

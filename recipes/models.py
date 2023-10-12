@@ -18,7 +18,7 @@ class Recipes(models.Model):
 
 class ingredients(models.Model):
     name = models.CharField(max_length=50)
-    quantity = models.IntegerField(default=0)
+    quantity = models.CharField(max_length=50, default="")
     quantity_type = models.CharField(max_length=50, default="")
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
 

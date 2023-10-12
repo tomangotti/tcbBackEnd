@@ -6,7 +6,7 @@ class RecipesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user' )
+        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image' )
 \
 class IngredientsSerializer(serializers.ModelSerializer):
     class Meta:
