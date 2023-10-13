@@ -22,6 +22,17 @@ class GetAllRecipes(APIView):
         recipes = Recipes.objects.all()
         if len(recipes) > 0:
             serializer = RecipesSerializer(recipes, many=True)
+            serializer_data = serializer.data
+
+            for recipe_data in serializer_data:
+                recipe_id = recipe_data['id']
+                try:
+                    recipe = Recipes.objects.get(pk=recipe_id)
+                    if recipe.image:
+                        image_url = request.build_absolute_uri(recipe.image.url)
+                        recipe_data['image'] = image_url
+                except Recipes.DoesNotExist:
+                    pass
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -45,12 +56,20 @@ class GetRecipeDetails(APIView):
         saved_users = recipe.savedrecipes_set.all()
         ingredients_serializer = IngredientsSerializer(ingredients, many=True)
         recipe_serializer = RecipesSerializer(recipe)
+        recipe_data = recipe_serializer.data
         saved_user_serializer = SavedUsersSerializer(saved_users, many=True)
+        recipe_id = recipe_data["id"]
+        try:
+            recipe=Recipes.objects.get(pk=recipe_id)
+            if recipe.image:
+                image_url = request.build_absolute_uri(recipe.image.url)
+                recipe_data['image'] = image_url
+        except Recipes.DoesNotExist:
+            pass
         data = {
             'ingredients': ingredients_serializer.data,
-            'recipe': recipe_serializer.data,
+            'recipe': recipe_data,
             'users': saved_user_serializer.data
-            
         }
         return Response(data, status=status.HTTP_200_OK)
     
@@ -63,6 +82,18 @@ class GetUserSavedRecipes(APIView):
         saved_recipes = user.savedrecipes_set.all()
         recipe_list = [saved_recipe.recipe for saved_recipe in saved_recipes]
         serializer = RecipesSerializer(recipe_list, many=True)
+        serializer_data = serializer.data
+
+        for recipe_data in serializer_data:
+                recipe_id = recipe_data['id']
+                try:
+                    recipe = Recipes.objects.get(pk=recipe_id)
+                    if recipe.image:
+                        image_url = request.build_absolute_uri(recipe.image.url)
+                        recipe_data['image'] = image_url
+                except Recipes.DoesNotExist:
+                    pass
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class PostNewRecipe(APIView):
@@ -109,7 +140,7 @@ class PostNewRecipe(APIView):
 
     
 
-class PostASavedRecipe(APIView):
+class  AddOrRemoveSavedRecipeList(APIView):
     
     def post(self, request, *args, **kwargs):
         serializer = SavedARecipeSerializer(data=request.data)
@@ -126,6 +157,21 @@ class PostASavedRecipe(APIView):
                 return Response({'message': 'Recipe saved successfully'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        serializer = SavedARecipeSerializer(data=request.data)
 
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            user = validated_data['user']
+            recipe = validated_data['recipe']
 
+            if SavedRecipes.objects.filter(user=user, recipe=recipe):
+                deleteRecipe = SavedRecipes.objects.filter(user=user, recipe=recipe)
+                deleteRecipe.delete()
+                return Response({'message': 'Recipe remove successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
