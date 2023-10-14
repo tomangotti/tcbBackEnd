@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 
 
 
+
 class GetAllRecipes(APIView):
     serializer_class = RecipesSerializer
 
@@ -175,3 +176,11 @@ class  AddOrRemoveSavedRecipeList(APIView):
             else:
                 return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class DeleteRecipeView(APIView):
+    serializer_class = RecipesSerializer
+
+    def delete(self, request, *args, **kwargs):
+        serializer = RecipesSerializer(data=request.data)
