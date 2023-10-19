@@ -7,6 +7,7 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
 
 from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer
 from rest_framework.views import APIView
@@ -59,3 +60,13 @@ class CheckLoggedInView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         return Response({'message': 'User is logged in', 'user_id': user.id})
+    
+
+class GetUserInfo(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
