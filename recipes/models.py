@@ -30,3 +30,7 @@ class ingredients(models.Model):
 class SavedRecipes(models.Model):
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Cart(models.Model):
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

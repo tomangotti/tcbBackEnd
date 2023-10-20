@@ -8,6 +8,8 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
+from django.db import transaction
+
 
 from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer
 from rest_framework.views import APIView
@@ -69,4 +71,25 @@ class GetUserInfo(RetrieveAPIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class EditUser(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer  # Replace with your user serializer
+    queryset = User.objects.all()  # Replace with your user model queryset
+
+    def get_object(self):
+        # Retrieve the user object based on the authenticated user
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

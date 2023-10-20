@@ -9,8 +9,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-from .models import Recipes, ingredients, SavedRecipes
-from .serializers import RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer
+from .models import Recipes, ingredients, SavedRecipes, Cart
+from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer
 from django.contrib.auth.models import User
 
 
@@ -74,7 +74,6 @@ class GetRecipeDetails(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
     
-
 
 class GetUserSavedRecipes(APIView):
 
@@ -184,3 +183,65 @@ class DeleteRecipeView(APIView):
 
     def delete(self, request, *args, **kwargs):
         serializer = RecipesSerializer(data=request.data)
+
+
+
+class GetUserCartView(APIView):
+    serializer_class = CartSerializer
+
+    def get(self, request, code, format=None):
+        user = get_object_or_404(User, id=code)
+        print(user)
+        cart_items = user.cart_set.all()
+        print(cart_items)
+        cart_list = [cart_item.recipe for cart_item in cart_items]
+        print(cart_list)
+        serializer = RecipesSerializer(cart_list, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddRecipeToCartView(APIView):
+    # serializer_class = CartSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = CartSerializer(data=request.data)
+
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+
+            user = validated_data['user']
+            recipe = validated_data['recipe']
+
+            if User.objects.filter(id=user.id).exists() and Recipes.objects.filter(id=recipe.id).exists():
+                newCartItem = Cart(user=user, recipe=recipe)
+                newCartItem.save()
+                return Response({'message': 'Recipe added to Cart successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class RemoveRecipeFromCartView(APIView):
+    serializer_class = CartSerializer
+
+    def delete(self, request, *args, **kwargs):
+        serializer = CartSerializer(data=request.data)
+
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+
+            user = validated_data['user']
+            recipe = validated_data['recipe']
+
+            if Cart.objects.filter(user=user, recipe=recipe):
+                cart_item = Cart.objects.filter(user=user, recipe=recipe)
+                cart_item.delete()
+                return Response({'message': 'Cart item removed successfully'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Cart Item did not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
