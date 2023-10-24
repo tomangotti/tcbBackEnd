@@ -50,28 +50,33 @@ class GetIngredients(APIView):
 
 
 class GetRecipeDetails(APIView):
-
     def get(self, request, code, format=None):
         recipe = get_object_or_404(Recipes, id=code)
-        ingredients = recipe.ingredients_set.all()
-        saved_users = recipe.savedrecipes_set.all()
-        ingredients_serializer = IngredientsSerializer(ingredients, many=True)
+        
+        # Use the IngredientsSerializer to serialize ingredients
+        ingredients_serializer = IngredientsSerializer(recipe.ingredients.all(), many=True)
+        
+        # Use the SavedUsersSerializer to serialize saved users
+        saved_user_serializer = SavedUsersSerializer(recipe.savedrecipes_set.all(), many=True)
+        
+        # Use the RecipesSerializer to serialize the recipe
         recipe_serializer = RecipesSerializer(recipe)
+        
+        # Serialize the recipe data
         recipe_data = recipe_serializer.data
-        saved_user_serializer = SavedUsersSerializer(saved_users, many=True)
-        recipe_id = recipe_data["id"]
-        try:
-            recipe=Recipes.objects.get(pk=recipe_id)
-            if recipe.image:
-                image_url = request.build_absolute_uri(recipe.image.url)
-                recipe_data['image'] = image_url
-        except Recipes.DoesNotExist:
-            pass
+        
+        # Check and update the image URL if it exists
+        if recipe.image:
+            image_url = request.build_absolute_uri(recipe.image.url)
+            recipe_data['image'] = image_url
+        
+        # Create a response data dictionary
         data = {
             'ingredients': ingredients_serializer.data,
             'recipe': recipe_data,
             'users': saved_user_serializer.data
         }
+        
         return Response(data, status=status.HTTP_200_OK)
     
 
@@ -103,7 +108,6 @@ class PostNewRecipe(APIView):
         recipe_serializer = RecipesSerializer(data=request.data)
 
         if recipe_serializer.is_valid():
-            # Extract data from the recipe
             validated_data = recipe_serializer.validated_data
             name = validated_data['name']
             description = validated_data['description']
@@ -111,14 +115,13 @@ class PostNewRecipe(APIView):
             image = validated_data['image']
             user = validated_data['user']
 
-            # Create a new recipe
+        
             newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user)
             newRecipe.save()
 
-            # Extract ingredients data from the request
-            ingredients_data = json.loads(request.data.get('ingredients', '[]'))  # Parse the JSON string
-            print(ingredients_data)
-            # Now you can process and save ingredients if necessary
+           
+            ingredients_data = json.loads(request.data.get('ingredients', '[]'))  
+            
             for ingredient_data in ingredients_data:
                 print(ingredient_data)
                 ingredient = ingredients(
@@ -191,13 +194,9 @@ class GetUserCartView(APIView):
 
     def get(self, request, code, format=None):
         user = get_object_or_404(User, id=code)
-        print(user)
         cart_items = user.cart_set.all()
-        print(cart_items)
         cart_list = [cart_item.recipe for cart_item in cart_items]
-        print(cart_list)
         serializer = RecipesSerializer(cart_list, many=True)
-        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
