@@ -35,12 +35,15 @@ class CreateNewUser(APIView):
             if User.objects.filter(username=validated_data['username']).exists() or User.objects.filter(email=validated_data['email']).exists():
                 return Response({'error': 'Username or email already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-            user = User(username=validated_data['username'], email=validated_data['email'])
+            user = User(username=validated_data['username'], email=validated_data['email'], first_name=validated_data['first_name'], last_name=validated_data['last_name'])
             user.password = make_password(validated_data['password'])
             user.save()
+            print(user)
 
-            return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
-
+            token, created = Token.objects.get_or_create(user=user)
+            print(token.key)
+            return Response({'message': 'User created successfully', 'token': token.key}, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
