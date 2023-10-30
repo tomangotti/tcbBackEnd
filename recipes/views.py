@@ -65,24 +65,6 @@ class GetAllRecipes(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
-# class GetAllRecipes(APIView):
-#     serializer_class = RecipesSerializer
-#     def get(self, request, format=None):
-#         recipes = Recipes.objects.all()
-#         if len(recipes) > 0:
-#             serializer = RecipesSerializer(recipes, many=True)
-#             serializer_data = serializer.data
-
-#             for recipe_data in serializer_data:
-#                 recipe_id = recipe_data['id']
-#                 try:
-#                     recipe = Recipes.objects.get(pk=recipe_id)
-#                     if recipe.image:
-#                         image_url = request.build_absolute_uri(recipe.image.url)
-#                         recipe_data['image'] = image_url
-#                 except Recipes.DoesNotExist:
-#                     pass
-#             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -167,7 +149,6 @@ class PostNewRecipe(APIView):
             newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user)
             newRecipe.save()
 
-           
             ingredients_data = json.loads(request.data.get('ingredients', '[]'))  
             
             for ingredient_data in ingredients_data:
@@ -292,3 +273,21 @@ class RemoveRecipeFromCartView(APIView):
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ShareRecipeWithUser(APIView):
+    
+    def post(self, request, code, *args, **kwargs):
+        print(request.data["email"])
+        print(code)
+        
+        if User.objects.filter(email=request.data["email"]).exists() and Recipes.objects.filter(id=code).exists():
+            user = User.objects.get(email=request.data["email"])
+            recipe = Recipes.objects.get(id=code)
+
+            newSavedRecipe = SavedRecipes(user=user, recipe=recipe)
+            newSavedRecipe.save()
+            return Response({'message': 'Recipe saved successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        
