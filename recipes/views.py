@@ -176,8 +176,9 @@ class  AddOrRemoveSavedRecipeList(APIView):
     
     def post(self, request, *args, **kwargs):
         serializer = SavedARecipeSerializer(data=request.data)
-
+        print(request.data)
         if serializer.is_valid():
+            print('wearevalid')
             validated_data = serializer.validated_data
 
             user = validated_data['user']
@@ -277,8 +278,6 @@ class RemoveRecipeFromCartView(APIView):
 class ShareRecipeWithUser(APIView):
     
     def post(self, request, code, *args, **kwargs):
-        print(request.data["email"])
-        print(code)
         
         if User.objects.filter(email=request.data["email"]).exists() and Recipes.objects.filter(id=code).exists():
             user = User.objects.get(email=request.data["email"])
