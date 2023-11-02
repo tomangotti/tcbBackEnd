@@ -3,12 +3,10 @@ name = "the-good-cook-book"
 version = "0.1.0"
 description = "backend db"
 authors = ["Thomas Angotti <tom.angotti11@gmail.com>"]
-license = "MIT"
-readme = "README.md"
+
 
 [tool.poetry.dependencies]
-python = "3.8.13"
-package-name = "^0.1"
+python = "3.8"
 django = "^4.2.7"
 djangorestframework = "^3.14.0"
 pillow = "^10.1.0"
@@ -17,7 +15,3 @@ psycopg2-binary = "^2.9.9"
 whitenoise = {extras = ["brotli"], version = "^6.6.0"}
 gunicorn = "^21.2.0"
 
-
-[build-system]
-requires = ["poetry-core==1.1.4"]
-build-backend = "poetry.core.masonry.api"
