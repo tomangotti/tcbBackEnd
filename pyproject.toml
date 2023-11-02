@@ -6,7 +6,7 @@ authors = ["Thomas Angotti <tom.angotti11@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "3.8.13"
+python = "3.7"
 poetry = "^1.1.4"
 django = "^4.2.7"
 djangorestframework = "^3.14.0"
