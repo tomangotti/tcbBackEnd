@@ -19,5 +19,5 @@ gunicorn = "^21.2.0"
 
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core==1.1.4"]
 build-backend = "poetry.core.masonry.api"
