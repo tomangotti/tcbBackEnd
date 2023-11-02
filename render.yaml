@@ -3,6 +3,7 @@ databases:
     databaseName: mysite
     user: mysite
 
+
 services:
   - type: web
     name: mysite
