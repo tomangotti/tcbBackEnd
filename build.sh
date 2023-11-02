@@ -2,6 +2,9 @@
 # exit on error
 set -o errexit
 
+# pre_build.sh
+#!/usr/bin/env bash
+pip install poetry
 poetry install
 
 
