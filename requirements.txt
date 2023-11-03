@@ -31,7 +31,7 @@ jsonschema==4.17.3
 keyring==24.1.1
 lockfile==0.12.2
 more-itertools==9.1.0
-msgpack==1.0.7
+msgpack==1.0.5
 packaging==20.9
 pastel==0.2.1
 pefile==2023.2.7
