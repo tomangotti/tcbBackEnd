@@ -14,7 +14,7 @@ crashtest==0.4.1
 cryptography==41.0.5
 distlib==0.3.7
 dj-database-url==2.1.0
-Django==4.2.4
+Django==3.2.23
 djangorestframework==3.14.0
 djangorestframework-jwt==1.11.0
 dulwich==0.21.6
