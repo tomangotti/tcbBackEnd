@@ -27,8 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get("DEBUG", "False").lower() == 'rue'
+DEBUG = os.environ.get("DEBUG", "False").lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(" ")
@@ -95,22 +94,10 @@ DATABASES = {
     }
 }
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Feel free to alter this value to suit your needs.
-#         default='postgresql://postgres:postgres@localhost:5432/mysite',
-#         conn_max_age=600
-#     )
-# }
-# postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr
 
 database_url = os.environ.get('DATABASE_URL')
 DATABASES["default"] = dj_database_url.parse(database_url)
 
-# PGPASSWORD=k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX psql -h dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com -U mysite mysite_knhr
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
