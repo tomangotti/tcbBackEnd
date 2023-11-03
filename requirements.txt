@@ -18,7 +18,7 @@ Django==3.2.23
 djangorestframework==3.14.0
 djangorestframework-jwt==1.11.0
 dulwich==0.21.6
-filelock==3.13.1
+filelock==3.12.2
 gunicorn==21.2.0
 html5lib==1.1
 idna==3.4
