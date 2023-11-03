@@ -75,5 +75,5 @@ urllib3==1.26.15
 virtualenv==20.24.6
 virtualenv-clone==0.5.7
 webencodings==0.5.1
-whitenoise==6.6.0
+whitenoise==6.5.0
 zipp==3.17.0
