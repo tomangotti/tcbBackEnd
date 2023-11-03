@@ -51,7 +51,7 @@ pycparser==2.21
 pygame==2.3.0
 # pygbag==0.7.1
 # pyinstaller @ https://github.com/pyinstaller/pyinstaller/archive/develop.zip
-pyinstaller==3.13.0
+pyinstaller==5.13.2
 pyinstaller-hooks-contrib==2023.1
 PyJWT==1.7.1
 pylev==1.4.0
