@@ -30,7 +30,7 @@ jeepney==0.8.0
 jsonschema==4.17.3
 keyring==24.1.1
 lockfile==0.12.2
-more-itertools==10.1.0
+more-itertools==9.1.0
 msgpack==1.0.7
 packaging==20.9
 pastel==0.2.1
