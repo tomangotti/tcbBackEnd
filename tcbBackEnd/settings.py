@@ -24,14 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-q(hk=b@=0y$wow^*by^tk4_8y@f$kn&)^5^tj%k#g$+@i2956j'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = 'RENDER' not in os.environ
+DEBUG = os.environ.get("DEBUG", "False").lower() == 'rue'
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(" ")
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -108,7 +108,7 @@ DATABASES = {
 # postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr
 DATABASES["default"] = dj_database_url.parse("postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr")
 
-
+# PGPASSWORD=k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX psql -h dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com -U mysite mysite_knhr
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
