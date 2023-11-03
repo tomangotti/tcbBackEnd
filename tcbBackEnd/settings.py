@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -106,7 +106,9 @@ DATABASES = {
 #     )
 # }
 # postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr
-DATABASES["default"] = dj_database_url.parse("postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr")
+
+database_url = os.environ.get('DATABASE_URL')
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 # PGPASSWORD=k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX psql -h dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com -U mysite mysite_knhr
 
