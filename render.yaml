@@ -8,8 +8,9 @@ services:
   - type: web
     name: mysite
     runtime: python
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn mysite.wsgi:application"
+    pythonVersion: 3.8
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn tbcBackEnd.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
