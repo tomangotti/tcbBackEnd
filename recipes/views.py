@@ -83,24 +83,18 @@ class GetRecipeDetails(APIView):
     def get(self, request, code, format=None):
         recipe = get_object_or_404(Recipes, id=code)
         
-        # Use the IngredientsSerializer to serialize ingredients
         ingredients_serializer = IngredientsSerializer(recipe.ingredients.all(), many=True)
         
-        # Use the SavedUsersSerializer to serialize saved users
         saved_user_serializer = SavedUsersSerializer(recipe.savedrecipes_set.all(), many=True)
         
-        # Use the RecipesSerializer to serialize the recipe
         recipe_serializer = RecipesSerializer(recipe)
-        
-        # Serialize the recipe data
+
         recipe_data = recipe_serializer.data
         
-        # Check and update the image URL if it exists
         if recipe.image:
             image_url = request.build_absolute_uri(recipe.image.url)
             recipe_data['image'] = image_url
         
-        # Create a response data dictionary
         data = {
             'ingredients': ingredients_serializer.data,
             'recipe': recipe_data,
