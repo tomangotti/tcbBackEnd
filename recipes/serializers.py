@@ -16,6 +16,12 @@ class RecipesSerializer(serializers.ModelSerializer):
         model = Recipes
         fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients')
 
+    def get_image_url(self, obj):
+        if obj.image:
+            # Assuming you have MEDIA_URL configured in your settings
+            return self.context['request'].build_absolute_uri(obj.image.url)
+        return None
+
 
 
 class SavedARecipeSerializer(serializers.ModelSerializer):
