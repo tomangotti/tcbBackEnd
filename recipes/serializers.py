@@ -11,17 +11,12 @@ class IngredientsSerializer(serializers.ModelSerializer):
 class RecipesSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
     ingredients = IngredientsSerializer(many=True, read_only=True)
-    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image','image_url', 'ingredients')
+        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients')
 
-    def get_image_url(self, obj):
-        if obj.image:
-            # Assuming you have MEDIA_URL configured in your settings
-            return self.context['request'].build_absolute_uri(obj.image.url)
-        return None
+
 
 
 

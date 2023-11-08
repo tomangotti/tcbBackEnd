@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from PIL import Image
+
 
 # Create your models here.
 class Recipes(models.Model):
@@ -15,26 +15,7 @@ class Recipes(models.Model):
     def __str__ (self):
         return self.name
     
-    def resize_image(self):
-        # Open the uploaded image using Pillow
-        img = Image.open(self.image.path)
 
-        # Set a maximum width and height for the resized image
-        max_width = 800  # Adjust this to your desired maximum width
-        max_height = 800  # Adjust this to your desired maximum height
-
-        # Check if the image dimensions exceed the maximum size
-        if img.width > max_width or img.height > max_height:
-            # Resize the image while preserving its aspect ratio
-            img.thumbnail((max_width, max_height))
-
-            # Save the resized image back to the same path
-            img.save(self.image.path)
-
-    def save(self, *args, **kwargs):
-        # Resize the image before saving
-        self.resize_image()
-        super().save(*args, **kwargs)
     
 
 class ingredients(models.Model):
