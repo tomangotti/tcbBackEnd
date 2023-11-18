@@ -40,10 +40,12 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 INSTALLED_APPS = [
     'render.apps.RenderConfig',
+    'websocket_app.apps.WebsocketAppConfig',
     'recipes.apps.RecipesConfig',
     'ususers.apps.UsusersConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +84,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tcbBackEnd.wsgi.application'
-
+ASGI_APPLICATION = 'tcbBackEnd.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -95,8 +97,8 @@ DATABASES = {
 }
 
 
-database_url = os.environ.get('DATABASE_URL')
-DATABASES["default"] = dj_database_url.parse(database_url)
+# database_url = os.environ.get('DATABASE_URL')
+# DATABASES["default"] = dj_database_url.parse(database_url)
 
 
 # Password validation
@@ -132,13 +134,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = '/media/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "media/")
+    os.path.join(BASE_DIR, "static"),
 ]
+
+
+# STATIC_URL = '/media/'
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'media/')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "media/")
+# ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
     
