@@ -12,7 +12,7 @@ urlpatterns = [
     path('users/', include("ususers.urls")),
     path('recipes/', include("recipes.urls")),
     path('render/', include("render.urls")),
-    path('websocket_app/', include("websocket_app.urls")),
+    path('messaging/', include("messaging.urls")),
 ]
 
 # if settings.DEBUG:

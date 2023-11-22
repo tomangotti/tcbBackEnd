@@ -24,10 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'nO2yk5OFAxrRt3cHM5WL3tpyxyNIZASL1mrnth2Z9UY='
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False").lower() == 'true'
+# DEBUG = os.environ.get("DEBUG", "False").lower() == 'true'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(" ")
@@ -40,12 +41,11 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 INSTALLED_APPS = [
     'render.apps.RenderConfig',
-    'websocket_app.apps.WebsocketAppConfig',
     'recipes.apps.RecipesConfig',
     'ususers.apps.UsusersConfig',
+    'messaging.apps.MessagingConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tcbBackEnd.wsgi.application'
-ASGI_APPLICATION = 'tcbBackEnd.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
