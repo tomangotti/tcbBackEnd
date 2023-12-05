@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Messages
 from .serializer import MessagesSerializer
+from recipes.models import Recipes
+
 
 import os
 
@@ -36,9 +38,7 @@ class PostNewMessage(APIView):
         if serializer.is_valid():
             message = Messages.objects.create(user=user, content=serializer.data['content'], role='user')
             message.save()
-            print(message.content)
-            res = gerate_openai_response(serializer.data['content'], user)
-            print(res)
+            res = generate_openai_response(serializer.data['content'], user)
             ai_message = Messages.objects.create(user=user, content=res, role='system')
             ai_message.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -48,21 +48,42 @@ class PostNewMessage(APIView):
 
 
 
-def gerate_openai_response(content, user):
+def generate_openai_response(content, user):
+    recipes = Recipes.objects.all()
+    recipes_list = []
+    for recipe in recipes:
+        ingredients_list = recipe.ingredients.values_list('name', 'quantity', 'quantity_type')
+
+        recipe_info = {
+            "name": recipe.name,
+            "description": recipe.description,
+            "instructions": recipe.instructions,
+            "published": recipe.published,
+            "ingredients": [{"name": name, "quantity": quantity, "quantity_type": quantity_type} for name, quantity, quantity_type in ingredients_list],
+        }
+        recipes_list.append(recipe_info)
+
+    message_list = Messages.objects.filter(user=user).order_by('created_at')
 
     messages = [
         {"role": "system", "content": "You are a helpful cooking assistant."},
         {"role": "system", "content": "You job is to help users find recipes that are in the database or to help them create new recipes."},
-        {"role": "user", "content": content},
+        {"role": "system", "content": f"Here is the recipe database:{recipes_list}"}
     ]
+
+    for message in message_list:
+        if message.role == 'user':
+            messages.append({"role": "user", "content": message.content})
+        else:
+            messages.append({"role": "system", "content": message.content})
+
     print('we about to send this to openai')
 
     completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
     print(completion.choices[0].message.content)  
     
     return completion.choices[0].message.content
-
-
+    
 
 
 class MessageAPIView(APIView):
@@ -78,3 +99,39 @@ class ClearUserMessages(APIView):
         messages = Messages.objects.filter(user=user)
         messages.delete()
         return Response({"Message": "Messages deleted"},status=status.HTTP_200_OK)
+    
+
+
+
+
+    # recipes = Recipes.objects.all()
+    # recipes_list = []
+    # for recipe in recipes:
+    #     # Extract ingredients information
+    #     ingredients_list = recipe.ingredients.values_list('name', 'quantity', 'quantity_type')
+
+    #     recipe_info = {
+    #         "name": recipe.name,
+    #         "description": recipe.description,
+    #         "instructions": recipe.instructions,
+    #         "published": recipe.published,
+    #         "ingredients": [{"name": name, "quantity": quantity, "quantity_type": quantity_type} for name, quantity, quantity_type in ingredients_list],
+    #     }
+    #     recipes_list.append(recipe_info)
+    
+    # messages = [
+    #     {"role": "system", "content": "You are a helpful cooking assistant."},
+    #     {"role": "system", "content": "You job is to help users find recipes that are in the database or to help them create new recipes."},
+    #     {"role": "system", "content": "Here is the recipe database:", "object": recipes_list},
+    #     {"role": "user", "content": content},
+    # ]
+    # print('we about to send this to openai')
+    # print(messages)
+    # try: 
+    #     completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
+    #     print(completion.choices[0].message.content)  
+    
+    #     return completion.choices[0].message.content
+    # except Exception as e:
+    #     print(f"Error: {e}")
+    #     return "An error occured"
