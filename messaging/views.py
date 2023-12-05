@@ -12,7 +12,7 @@ from .serializer import MessagesSerializer
 import os
 
 from openai import OpenAI
-client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+client = OpenAI(api_key='')
 
 
 # Create your views here.
@@ -51,7 +51,8 @@ class PostNewMessage(APIView):
 def gerate_openai_response(content, user):
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": "You are a helpful cooking assistant."},
+        {"role": "system", "content": "You job is to help users find recipes that are in the database or to help them create new recipes."},
         {"role": "user", "content": content},
     ]
     print('we about to send this to openai')
@@ -67,3 +68,13 @@ def gerate_openai_response(content, user):
 class MessageAPIView(APIView):
     def post(self, request):
         pass
+
+
+class ClearUserMessages(APIView):
+
+    def delete(self, request, code):
+        print(code)
+        user = code
+        messages = Messages.objects.filter(user=user)
+        messages.delete()
+        return Response({"Message": "Messages deleted"},status=status.HTTP_200_OK)
