@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-
+from django.db import transaction
 
 import json
 from rest_framework import generics, status
@@ -284,3 +284,40 @@ class ShareRecipeWithUser(APIView):
             return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
         
+        
+class EditRecipe(APIView):
+    serializer_class = RecipesSerializer
+
+    def patch(self, request, code, *args, **kwargs):
+
+        recipe = get_object_or_404(Recipes, id=code)
+        serializer = RecipesSerializer(data=request.data, partial=True)
+
+        if serializer.is_valid():
+
+            recipe.ingredients.all().delete()
+
+            recipe.name = serializer.validated_data['name']
+            recipe.description = serializer.validated_data['description']
+            recipe.instructions = serializer.validated_data['instructions']
+            recipe.save()
+
+            ingredients_data = json.loads(request.data.get('ingredients', '[]'))
+            with transaction.atomic():
+                for ingredient_data in ingredients_data:
+                    ingredient = ingredients(
+                        recipe=recipe,
+                        name=ingredient_data['name'],
+                        quantity=ingredient_data['quantity'],
+                        quantity_type=ingredient_data['quantity_type']
+                    )
+                    ingredient.save()
+
+                serializer.save()
+
+            serializer.save()
+            return Response({'message': 'Recipe updated successfully'}, status=status.HTTP_200_OK)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
