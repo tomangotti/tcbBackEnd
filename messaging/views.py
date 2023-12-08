@@ -14,7 +14,8 @@ from recipes.models import Recipes
 import os
 
 from openai import OpenAI
-client = OpenAI(api_key='')
+key = os.environ.get('OPENAI_API_KEY')
+client = OpenAI(api_key=key)
 
 
 # Create your views here.
