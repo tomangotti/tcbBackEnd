@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'ususers.apps.UsusersConfig',
     'messaging.apps.MessagingConfig',
-    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',
