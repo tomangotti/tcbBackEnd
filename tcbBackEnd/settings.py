@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -96,8 +95,8 @@ DATABASES = {
 }
 
 
-# database_url = os.environ.get('DATABASE_URL')
-# DATABASES["default"] = dj_database_url.parse(database_url)
+database_url = os.environ.get('DATABASE_URL')
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 
 # Password validation
@@ -147,9 +146,6 @@ STATICFILES_DIRS = [
 # ]
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-    
-
 
 
 
