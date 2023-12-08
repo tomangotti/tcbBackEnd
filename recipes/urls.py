@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import   EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView
+from .views import   DeleteRecipe, EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView
 
 urlpatterns = [
     path("recipe-saved", PostNewRecipe.as_view()),
@@ -17,5 +17,6 @@ urlpatterns = [
     path("cart/remove", RemoveRecipeFromCartView.as_view()),
     path("share/recipe/<str:code>", ShareRecipeWithUser.as_view()),
     path("edit/<str:code>", EditRecipe.as_view()),
+    path("delete/<str:code>", DeleteRecipe.as_view()),
 ]
 

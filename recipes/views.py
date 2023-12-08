@@ -321,3 +321,8 @@ class EditRecipe(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+class DeleteRecipe(APIView):
+    def delete(self, request, code, *args, **kwargs):
+        recipe = get_object_or_404(Recipes, id=code)
+        recipe.delete()
+        return Response({'message': 'Recipe deleted successfully'}, status=status.HTTP_200_OK)
