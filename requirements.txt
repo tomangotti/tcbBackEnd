@@ -104,7 +104,7 @@ Twisted==23.8.0
 txaio==23.1.1
 typing_extensions==4.7.1
 urllib3==1.26.15
-uvicorn==0.24.0.post1
+uvicorn==0.22.0
 virtualenv==20.24.6
 virtualenv-clone==0.5.7
 webencodings==0.5.1
