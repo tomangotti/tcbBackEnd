@@ -75,7 +75,7 @@ pydantic==2.5.2
 pydantic_core==2.14.5
 # pygame==2.3.0
 # pygbag==0.7.1
-pyinstaller==3.7.10
+pyinstaller==5.13.2
 pyinstaller-hooks-contrib==2023.1
 PyJWT==1.7.1
 pylev==1.4.0
