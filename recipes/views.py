@@ -380,6 +380,9 @@ class EditRecipe(APIView):
             recipe.name = serializer.validated_data['name']
             recipe.description = serializer.validated_data['description']
             recipe.instructions = serializer.validated_data['instructions']
+            if 'image' in serializer.validated_data:
+                recipe.image = serializer.validated_data['image']
+
             recipe.save()
 
             ingredients_data = json.loads(request.data.get('ingredients', '[]'))
