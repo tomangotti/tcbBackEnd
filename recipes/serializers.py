@@ -14,6 +14,11 @@ class TagsSerializer(serializers.ModelSerializer):
         model = Tags
         fields = ('name', 'recipe')
 
+class RatingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ratings
+        fields = ('rating', 'recipe', 'user')
+
 
 class RecipesSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
