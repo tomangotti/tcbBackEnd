@@ -15,7 +15,7 @@ import os
 
 from openai import OpenAI
 key = os.environ.get('OPENAI_API_SECRET_KEY')
-
+#key = ""
 client = OpenAI(api_key=key)
 
 
@@ -27,7 +27,8 @@ class GetUsersMessages(APIView):
         serializer = MessagesSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
+    
+# Posting new message in chat with chat bot
 class PostNewMessage(APIView):
     def get_user(self, user_id):
         return get_object_or_404(User, pk=user_id)
@@ -49,7 +50,7 @@ class PostNewMessage(APIView):
         
 
 
-
+# function sending message to OPENAI API 
 def generate_openai_response(content, user):
     recipes = Recipes.objects.all()
     recipes_list = []

@@ -169,47 +169,7 @@ class PostNewRecipe(APIView):
             print(recipe_serializer.error_messages)
             return Response(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class PostNewRecipe(APIView):
 
-#     def post(self, request, *args, **kwargs):
-        
-#         recipe_serializer = RecipesSerializer(data=request.data)
-
-#         if recipe_serializer.is_valid():
-#             validated_data = recipe_serializer.validated_data
-#             name = validated_data['name']
-#             description = validated_data['description']
-#             instructions = validated_data['instructions']
-#             image = validated_data['image']
-#             user = validated_data['user']
-
-        
-#             newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user)
-#             newRecipe.save()
-
-#             ingredients_data = json.loads(request.data.get('ingredients', '[]'))  
-            
-#             for ingredient_data in ingredients_data:
-#                 print(ingredient_data)
-#                 ingredient = ingredients(
-#                     recipe=newRecipe,
-#                     name=ingredient_data['name'],
-#                     quantity=ingredient_data['quantity'],
-#                     quantity_type=ingredient_data['quantity_type']
-#                 )
-#                 ingredient.save()
-                
-#             newSavedRecipe = SavedRecipes(user=user, recipe=newRecipe)
-#             newSavedRecipe.save()
-
-#             return Response({'message': 'Recipe and ingredients added successfully.'}, status=status.HTTP_201_CREATED)
-#         else:
-#             print(recipe_serializer.error_messages)
-#             return Response(recipe_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-######
-##
 
 class  AddOrRemoveSavedRecipeList(APIView):
     
@@ -329,41 +289,6 @@ class ShareRecipeWithUser(APIView):
             return Response({'error': 'User or recipe does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
         
-        
-# class EditRecipe(APIView):
-#     serializer_class = RecipesSerializer
-
-#     def patch(self, request, code, *args, **kwargs):
-
-#         recipe = get_object_or_404(Recipes, id=code)
-#         serializer = RecipesSerializer(data=request.data, partial=True)
-
-#         if serializer.is_valid():
-
-#             recipe.ingredients.all().delete()
-
-#             recipe.name = serializer.validated_data['name']
-#             recipe.description = serializer.validated_data['description']
-#             recipe.instructions = serializer.validated_data['instructions']
-#             recipe.save()
-
-#             ingredients_data = json.loads(request.data.get('ingredients', '[]'))
-#             with transaction.atomic():
-#                 for ingredient_data in ingredients_data:
-#                     ingredient = ingredients(
-#                         recipe=recipe,
-#                         name=ingredient_data['name'],
-#                         quantity=ingredient_data['quantity'],
-#                         quantity_type=ingredient_data['quantity_type']
-#                     )
-#                     ingredient.save()
-
-#                 serializer.save()
-
-#             serializer.save()
-#             return Response({'message': 'Recipe updated successfully'}, status=status.HTTP_200_OK)
-#         print(serializer.errors)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EditRecipe(APIView):
     serializer_class = RecipesSerializer
@@ -407,3 +332,16 @@ class DeleteRecipe(APIView):
         recipe = get_object_or_404(Recipes, id=code)
         recipe.delete()
         return Response({'message': 'Recipe deleted successfully'}, status=status.HTTP_200_OK)
+    
+
+# class GetAllInfo(APIView):
+#     def get(self, request):
+#         try:
+#             recipe = Recipes.objects.all()
+#             users = User.objects.all()
+#             recipe_serializer = RecipesSerializer(recipe, many=True)
+#             users_serializer = SavedUsersSerializer(users, many=True)
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#         return Response({'recipes': recipe_serializer.data, 'users': users_serializer.data}, status=status.HTTP_200_OK)
