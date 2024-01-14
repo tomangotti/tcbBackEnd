@@ -24,9 +24,11 @@ class RecipesSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
     ingredients = IngredientsSerializer(many=True, read_only=True)
     tags = TagsSerializer(many=True, read_only=True)
+    ratings = RatingsSerializer(many=True, read_only=True)
+
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients', 'category', 'servings', 'cook_time', 'tags')
+        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients', 'category', 'servings', 'cook_time', 'tags', 'ratings')
 
 
 
