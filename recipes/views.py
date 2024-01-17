@@ -166,7 +166,7 @@ class PostNewRecipe(APIView):
                 )
                 ingredient.save()
 
-            tag_list = json.loads(request.data.get('tags', '[]'))
+            tag_list = validated_data['tags']
 
             for tag in tag_list:
                 newTag = Tags(name=tag, recipe=newRecipe)
@@ -336,7 +336,7 @@ class EditRecipe(APIView):
                     )
                     ingredient.save()
 
-            tag_list = json.loads(request.data.get('tags', '[]'))
+            tag_list = serializer.validated_data['tags']
             recipe.tags.all().delete()
             for tag in tag_list:
                 newTag = Tags(name=tag, recipe=recipe)
