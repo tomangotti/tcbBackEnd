@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 
 from .models import Recipes, ingredients, SavedRecipes, Cart, Tags, ratings
-from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer
+from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer, TagsSerializer
 from django.contrib.auth.models import User
 
 
@@ -89,6 +89,8 @@ class GetRecipeDetails(APIView):
         
         recipe_serializer = RecipesSerializer(recipe)
 
+        tags_serializer = TagsSerializer(recipe.tags.all(), many=True)
+
         recipe_data = recipe_serializer.data
         
         if recipe.image:
@@ -98,7 +100,7 @@ class GetRecipeDetails(APIView):
         data = {
             'ingredients': ingredients_serializer.data,
             'recipe': recipe_data,
-            'users': saved_user_serializer.data
+            'users': saved_user_serializer.data,
         }
         
         return Response(data, status=status.HTTP_200_OK)
@@ -314,6 +316,10 @@ class EditRecipe(APIView):
             recipe.name = serializer.validated_data['name']
             recipe.description = serializer.validated_data['description']
             recipe.instructions = serializer.validated_data['instructions']
+            recipe.category = serializer.validated_data['category']
+            recipe.servings = serializer.validated_data['servings']
+            recipe.cook_time = serializer.validated_data['cook_time']
+
             if 'image' in serializer.validated_data:
                 recipe.image = serializer.validated_data['image']
 
@@ -329,6 +335,12 @@ class EditRecipe(APIView):
                         quantity_type=ingredient_data['quantity_type']
                     )
                     ingredient.save()
+
+            tag_list = json.loads(request.data.get('tags', '[]'))
+            recipe.tags.all().delete()
+            for tag in tag_list:
+                newTag = Tags(name=tag, recipe=recipe)
+                newTag.save()
 
             return Response({'message': 'Recipe updated successfully'}, status=status.HTTP_200_OK)
 
