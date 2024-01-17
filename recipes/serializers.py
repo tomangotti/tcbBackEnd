@@ -34,6 +34,7 @@ class RecipesSerializer(serializers.ModelSerializer):
 
 
 
+
 class SavedARecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedRecipes

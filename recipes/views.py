@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-from .models import Recipes, ingredients, SavedRecipes, Cart
+from .models import Recipes, ingredients, SavedRecipes, Cart, Tags, ratings
 from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer
 from django.contrib.auth.models import User
 
@@ -139,6 +139,9 @@ class PostNewRecipe(APIView):
             description = validated_data['description']
             instructions = validated_data['instructions']
             user = validated_data['user']
+            category = validated_data['category']
+            servings = validated_data['servings']
+            cook_time = validated_data['cook_time']
 
             # Check if the 'image' key exists in the validated_data
             if 'image' in validated_data:
@@ -146,7 +149,7 @@ class PostNewRecipe(APIView):
             else:
                 image = None  # or set a default image if necessary
 
-            newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user)
+            newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user, category=category, servings=servings, cook_time=cook_time)
             newRecipe.save()
 
             ingredients_data = json.loads(request.data.get('ingredients', '[]'))  
@@ -160,6 +163,12 @@ class PostNewRecipe(APIView):
                     quantity_type=ingredient_data['quantity_type']
                 )
                 ingredient.save()
+
+            tag_list = json.loads(request.data.get('tags', '[]'))
+
+            for tag in tag_list:
+                newTag = Tags(name=tag, recipe=newRecipe)
+                newTag.save()
                 
             newSavedRecipe = SavedRecipes(user=user, recipe=newRecipe)
             newSavedRecipe.save()
