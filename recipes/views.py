@@ -145,11 +145,11 @@ class PostNewRecipe(APIView):
             servings = validated_data['servings']
             cook_time = validated_data['cook_time']
 
-            # Check if the 'image' key exists in the validated_data
+
             if 'image' in validated_data:
                 image = validated_data['image']
             else:
-                image = None  # or set a default image if necessary
+                image = None  
 
             newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user, category=category, servings=servings, cook_time=cook_time)
             newRecipe.save()
@@ -166,9 +166,9 @@ class PostNewRecipe(APIView):
                 )
                 ingredient.save()
 
-            tag_list = validated_data['tags']
+            tag_data = json.loads(request.data.get('tags', '[]'))
 
-            for tag in tag_list:
+            for tag in tag_data:
                 newTag = Tags(name=tag, recipe=newRecipe)
                 newTag.save()
                 
@@ -312,6 +312,7 @@ class EditRecipe(APIView):
         if serializer.is_valid():
 
             recipe.ingredients.all().delete()
+            recipe.tags.all().delete()
 
             recipe.name = serializer.validated_data['name']
             recipe.description = serializer.validated_data['description']
@@ -336,9 +337,9 @@ class EditRecipe(APIView):
                     )
                     ingredient.save()
 
-            tag_list = serializer.validated_data['tags']
-            recipe.tags.all().delete()
-            for tag in tag_list:
+            tag_data = json.loads(request.data.get('tags', '[]'))
+
+            for tag in tag_data:
                 newTag = Tags(name=tag, recipe=recipe)
                 newTag.save()
 
