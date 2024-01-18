@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Recipes(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=300)
+    description = models.CharField(max_length=500)
     instructions = models.CharField(max_length=1000)
     published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -14,6 +14,13 @@ class Recipes(models.Model):
     category = models.CharField(max_length=50, default="other")
     servings = models.CharField(max_length=50, default="")
     cook_time = models.CharField(max_length=50, default="")
+
+    def average_rating(self):
+        all_ratings = ratings.objects.filter(recipe=self)
+        if len(all_ratings) > 0:
+            return sum([x.rating for x in all_ratings]) / len(all_ratings)
+        else:
+            return 0
 
     def __str__ (self):
         return self.name

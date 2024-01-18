@@ -89,8 +89,6 @@ class GetRecipeDetails(APIView):
         
         recipe_serializer = RecipesSerializer(recipe)
 
-        tags_serializer = TagsSerializer(recipe.tags.all(), many=True)
-
         recipe_data = recipe_serializer.data
         
         if recipe.image:

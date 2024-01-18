@@ -18,17 +18,18 @@ class RatingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ratings
         fields = ('rating', 'recipe', 'user')
+    
 
 
 class RecipesSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
     ingredients = IngredientsSerializer(many=True, read_only=True)
     tags = TagsSerializer(many=True, read_only=True)
-    ratings = RatingsSerializer(many=True, read_only=True)
-
+    average_rating = serializers.ReadOnlyField(source='average_rating')
+    
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients', 'category', 'servings', 'cook_time', 'tags', 'ratings')
+        fields = ('id', 'name', 'description', 'instructions', 'published', 'user_username', 'user', 'image', 'ingredients', 'category', 'servings', 'cook_time', 'tags', 'average_rating')
 
 
 
