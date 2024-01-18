@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 
 from .models import Recipes, ingredients, SavedRecipes, Cart, Tags, ratings
-from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer, TagsSerializer
+from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer, TagsSerializer, RatingsSerializer
 from django.contrib.auth.models import User
 
 
@@ -353,6 +353,33 @@ class DeleteRecipe(APIView):
         recipe.delete()
         return Response({'message': 'Recipe deleted successfully'}, status=status.HTTP_200_OK)
     
+
+
+
+class AddNewRatingView(APIView):
+    serializer_class = RatingsSerializer
+
+    def post(self, request, *args, **kwargs):
+        recipe_id = request.data.get('recipe_id')
+        user_id = request.data.get('user_id')
+        rating_value = request.data.get('rating')
+
+        try:
+            existing_rating = ratings.objects.filter(recipe_id=recipe_id, user_id=user_id).first()
+            if existing_rating:
+                existing_rating.delete()
+
+            
+            rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
+            rating.save()
+
+            return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
 
 # class GetAllInfo(APIView):
 #     def get(self, request):
