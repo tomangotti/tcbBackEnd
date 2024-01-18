@@ -382,27 +382,31 @@ class AddNewRatingView(APIView):
     serializer_class = RatingsSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        recipe_id = request.data.get('recipe')
-        user_id = request.data.get('user')
-        rating_value = request.data.get('rating')
+        print("hello world")
+        
+        serializer = RatingsSerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            recipe_id = serializer.validated_data['recipe']
+            user_id = serializer.validated_data['user']
+            rating_value = serializer.validated_data['rating']
 
-        try:
-            # Retrieve the Recipe object
-            recipe = Recipes.objects.get(pk=recipe_id)
+            try:
+                # Retrieve the Recipe object
+                recipe = Recipes.objects.get(pk=recipe_id)
 
-            # Check if a rating by the same user exists and delete it
-            existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
-            if existing_rating:
-                existing_rating.delete()
+                # Check if a rating by the same user exists and delete it
+                existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
+                if existing_rating:
+                    existing_rating.delete()
 
-            # Create a new ratings object with the Recipe and User
-            rating = ratings(recipe=recipe, user=user_id, rating=rating_value)
-            rating.save()
+                # Create a new ratings object with the Recipe and User
+                rating = ratings(recipe=recipe, user=user_id, rating=rating_value)
+                rating.save()
 
-            return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
