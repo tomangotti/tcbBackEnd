@@ -397,22 +397,16 @@ class AddNewRatingView(APIView):
             print(user_id)
             print(rating_value)
 
-            try:
-                # Retrieve the Recipe object
-                recipe = Recipes.objects.get(pk=recipe_id)
-                print(recipe)
-                # Check if a rating by the same user exists and delete it
-                existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
-                if existing_rating:
-                    existing_rating.delete()
-
-                # Create a new ratings object with the Recipe and User
-                rating = ratings(recipe=recipe, user=user_id, rating=rating_value)
+            if ratings.get(recipe=recipe_id, user=user_id):
+                ratings.get(recipe=recipe_id, user=user_id).delete()
+            else:
+                rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
                 rating.save()
-
                 return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
