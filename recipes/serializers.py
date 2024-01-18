@@ -25,7 +25,7 @@ class RecipesSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
     ingredients = IngredientsSerializer(many=True, read_only=True)
     tags = TagsSerializer(many=True, read_only=True)
-    average_rating = serializers.ReadOnlyField(source='average_rating')
+    average_rating = serializers.ReadOnlyField()
     
     class Meta:
         model = Recipes
