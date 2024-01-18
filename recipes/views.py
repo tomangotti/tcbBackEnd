@@ -365,7 +365,8 @@ class AddNewRatingView(APIView):
         rating_value = request.data.get('rating')
 
         try:
-            existing_rating = ratings.objects.filter(recipe_id=recipe_id, user_id=user_id).first()
+            recipe = Recipes.objects.get(pk=recipe_id)
+            existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
             if existing_rating:
                 existing_rating.delete()
 
