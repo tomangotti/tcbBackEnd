@@ -399,7 +399,7 @@ class AddNewRatingView(APIView):
 
             try:
                 # Retrieve the Recipe object
-                recipe = Recipes.objects.get(id=recipe_id)
+                recipe = Recipes.objects.get(pk=recipe_id)
                 print(recipe)
                 # Check if a rating by the same user exists and delete it
                 existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
