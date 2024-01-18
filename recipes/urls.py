@@ -18,6 +18,6 @@ urlpatterns = [
     path("share/recipe/<str:code>", ShareRecipeWithUser.as_view()),
     path("edit/<str:code>", EditRecipe.as_view()),
     path("delete/<str:code>", DeleteRecipe.as_view()),
-    path('ratings/new', AddNewRatingView.as_view()),
+    path('ratings/new/<str:code>', AddNewRatingView.as_view()),
 ]
 
