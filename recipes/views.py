@@ -383,13 +383,11 @@ class AddNewRatingView(APIView):
 
     def post(self, request, *args, **kwargs):
         print(request.data)
-        print(request.data.recipe)
-        serializer = RatingsSerializer(data=request.data)
-        try:
-            recipe_id = request.data.recipe
-            user_id = request.data.user
-            rating_value = request.data.rating
+        recipe_id = request.data.get('recipe')
+        user_id = request.data.get('user')
+        rating_value = request.data.get('rating')
 
+        try:
             # Retrieve the Recipe object
             recipe = Recipes.objects.get(pk=recipe_id)
 
