@@ -387,14 +387,20 @@ class AddNewRatingView(APIView):
         serializer = RatingsSerializer(data=request.data)
         print(serializer)
         if serializer.is_valid():
-            recipe_id = serializer.validated_data['recipe']
-            user_id = serializer.validated_data['user']
-            rating_value = serializer.validated_data['rating']
+            validated_data = serializer.validated_data
+
+            recipe_id = validated_data['recipe']
+            user_id = validated_data['user']
+            rating_value = validated_data['rating']
+
+            print(recipe_id)
+            print(user_id)
+            print(rating_value)
 
             try:
                 # Retrieve the Recipe object
-                recipe = Recipes.objects.get(pk=recipe_id)
-
+                recipe = Recipes.objects.get(id=recipe_id)
+                print(recipe)
                 # Check if a rating by the same user exists and delete it
                 existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
                 if existing_rating:
