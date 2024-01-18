@@ -356,29 +356,52 @@ class DeleteRecipe(APIView):
 
 
 
+# class AddNewRatingView(APIView):
+#     serializer_class = RatingsSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         recipe_id = request.data.get('recipe_id')
+#         user_id = request.data.get('user_id')
+#         rating_value = request.data.get('rating')
+
+#         try:
+#             recipe = Recipes.objects.get(pk=recipe_id)
+#             existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
+#             if existing_rating:
+#                 existing_rating.delete()
+
+            
+#             rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
+#             rating.save()
+
+#             return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class AddNewRatingView(APIView):
     serializer_class = RatingsSerializer
 
     def post(self, request, *args, **kwargs):
-        recipe_id = request.data.get('recipe_id')
-        user_id = request.data.get('user_id')
-        rating_value = request.data.get('rating')
-
         try:
+            recipe_id = request.data.get('recipe_id')
+            user_id = request.data.get('user_id')
+            rating_value = request.data.get('rating')
+
+            # Retrieve the Recipe object
             recipe = Recipes.objects.get(pk=recipe_id)
+
+            # Check if a rating by the same user exists and delete it
             existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
             if existing_rating:
                 existing_rating.delete()
 
-            
-            rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
+            # Create a new ratings object with the Recipe and User
+            rating = ratings(recipe=recipe, user=user_id, rating=rating_value)
             rating.save()
 
             return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 
 
