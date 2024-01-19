@@ -36,10 +36,12 @@ class PostNewMessage(APIView):
     def post(self, request):
         user_id = request.data.get('user')
         user = self.get_user(user_id)
+        print(request.data)
         serializer = MessagesSerializer(data=request.data)
-
+        print(serializer)
         if serializer.is_valid():
             message = Messages.objects.create(user=user, content=serializer.data['content'], role='user')
+            print(message)
             message.save()
             res = generate_openai_response(serializer.data['content'], user)
             ai_message = Messages.objects.create(user=user, content=res, role='system')
@@ -52,6 +54,7 @@ class PostNewMessage(APIView):
 
 # function sending message to OPENAI API 
 def generate_openai_response(content, user):
+    print("hello from ai response")
     recipes = Recipes.objects.all()
     recipes_list = []
     for recipe in recipes:
@@ -62,6 +65,9 @@ def generate_openai_response(content, user):
             "description": recipe.description,
             "instructions": recipe.instructions,
             "published": recipe.published,
+            "category": recipe.category,
+            "servings": recipe.servings,
+            "cook_time": recipe.cook_time,
             "ingredients": [{"name": name, "quantity": quantity, "quantity_type": quantity_type} for name, quantity, quantity_type in ingredients_list],
         }
         recipes_list.append(recipe_info)
