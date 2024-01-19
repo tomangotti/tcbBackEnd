@@ -3,6 +3,7 @@ from .models import Messages
 
 
 
+
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Messages
