@@ -14,8 +14,8 @@ from recipes.models import Recipes
 import os
 
 from openai import OpenAI
-# key = os.environ.get('OPENAI_API_SECRET_KEY')
-key = ""
+key = os.environ.get('OPENAI_API_SECRET_KEY')
+# key = ""
 client = OpenAI(api_key=key)
 
 
