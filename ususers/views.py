@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 
 
-from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer
+from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer, ProfileInformationSerializer
 from rest_framework.views import APIView
 
 
@@ -96,3 +96,12 @@ class EditUser(RetrieveAPIView):
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+
+class GetUsersProfileInformation(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, code, *args, **kwargs):
+        user = get_object_or_404(User, id=code)
+        serializer = ProfileInformationSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

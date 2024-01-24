@@ -13,6 +13,7 @@ urlpatterns = [
     path('recipes/', include("recipes.urls")),
     path('render/', include("render.urls")),
     path('messaging/', include("messaging.urls")),
+    path('social/', include("social.urls")),
 ]
 
 # if settings.DEBUG:

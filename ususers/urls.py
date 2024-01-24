@@ -8,8 +8,8 @@ urlpatterns = [
     path("login", UserLoginView.as_view()),
     path('check-logged-in', CheckLoggedInView.as_view()),
     path('<str:code>/update', EditUser.as_view()),
+    
 ]
-
 
 
 

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'ususers.apps.UsusersConfig',
     'messaging.apps.MessagingConfig',
+    'social.apps.SocialConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',
@@ -94,8 +95,8 @@ ASGI_APPLICATION = "tcbBackEnd.routing.application"
 # }
 
 
-database_url = os.environ.get('DATABASE_URL')
-# database_url = "postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr"
+# database_url = os.environ.get('DATABASE_URL')
+database_url = "postgres://mysite:k6IHOAcCRkg7cXGkx3UGiTPrrFCc6oBX@dpg-cl1cnia4i3ns73dgh43g-a.oregon-postgres.render.com/mysite_knhr"
 # DATABASES["default"] = dj_database_url.parse(database_url)
 DATABASES = {
     'default': dj_database_url.parse(database_url, conn_max_age=600)
