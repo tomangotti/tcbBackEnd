@@ -41,7 +41,7 @@ class ProfileInformationSerializer(serializers.Serializer):
         return Recipes.objects.filter(user=obj).count()
 
     def get_followers_count(self, obj):
-        return Follow.objects.filter(followed_user=obj).count()
+        return Follow.objects.filter(following=obj).count()
     
     class Meta:
         model = User
