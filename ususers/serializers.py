@@ -36,6 +36,7 @@ class UserLoginSerializer(serializers.Serializer):
 class ProfileInformationSerializer(serializers.ModelSerializer):
     recipes_count = serializers.SerializerMethodField()
     followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
 
     def get_recipes_count(self, obj):
         return Recipes.objects.filter(user=obj).count()
