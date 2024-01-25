@@ -33,7 +33,7 @@ class UserLoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
-class ProfileInformationSerializer(serializers.Serializer):
+class ProfileInformationSerializer(serializers.ModelSerializer):
     recipes_count = serializers.SerializerMethodField()
     followers_count = serializers.SerializerMethodField()
 
@@ -43,7 +43,10 @@ class ProfileInformationSerializer(serializers.Serializer):
     def get_followers_count(self, obj):
         return Follow.objects.filter(following=obj).count()
     
+    def get_following_count(self, obj):
+        return Follow.objects.filter(follower=obj).count()
+    
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'recipes_count', 'followers_count')
+        fields = ('id', 'username', 'recipes_count', 'followers_count', 'following_count')
     
