@@ -103,5 +103,7 @@ class GetUsersProfileInformation(APIView):
 
     def get(self, request, code, *args, **kwargs):
         user = get_object_or_404(User, id=code)
+        print(user)
         serializer = ProfileInformationSerializer(user)
+        print(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
