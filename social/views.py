@@ -37,7 +37,7 @@ class FollowUserView(APIView):
             user_to_follow = User.objects.get(id=code)
             follow, created = Follow.objects.get_or_create(follower=user, following=user_to_follow)
             if created:
-                serializer = FollowSerializer(user_to_follow)
+                serializer = FollowSerializer(follow)
                 return Response({'message': f'You are now following user', 'user': serializer.data})
             else:
                 return Response({'message': f'You are already following user'})
