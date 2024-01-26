@@ -109,4 +109,4 @@ class GetUsersProfileInformation(APIView):
         recipes = Recipes.objects.filter(user=user)
         recipes_serializer = RecipesSerializer(recipes, many=True)
 
-        return Response([serializer.data, recipes_serializer], status=status.HTTP_200_OK)
+        return Response([serializer.data, recipes_serializer.data], status=status.HTTP_200_OK)
