@@ -64,7 +64,7 @@ class UnfollowUserView(APIView):
 class FollowingCheckView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, following_user_id):
+    def get(self, request, following_user_id):
         try:
             user = request.user
             following_user = User.objects.get(id=following_user_id)
