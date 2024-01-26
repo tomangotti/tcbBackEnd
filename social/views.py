@@ -29,6 +29,7 @@ class FollowersView(APIView):
 
 
 class FollowUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, code):
         user = request.user
@@ -46,7 +47,9 @@ class FollowUserView(APIView):
 
 
 class UnfollowUserView(APIView):
-    def post(self, request, code):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, code):
         user = request.user
         try:
             user_to_unfollow = User.objects.get(id=code)
