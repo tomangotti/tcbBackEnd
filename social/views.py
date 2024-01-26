@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status, permissions
 from django.contrib.auth.models import User
 from .models import Follow
 from .serializer import FollowSerializer
@@ -15,6 +16,8 @@ class FollowingView(APIView):
         serializer = FollowSerializer(following_users, many=True)
         return Response(serializer.data)
 
+
+
 class FollowersView(APIView):
     def get(self, request):
         user = request.user
@@ -23,7 +26,10 @@ class FollowersView(APIView):
         serializer = FollowSerializer(followers_users, many=True)
         return Response(serializer.data)
 
+
+
 class FollowUserView(APIView):
+
     def post(self, request, code):
         user = request.user
         try:
@@ -37,6 +43,8 @@ class FollowUserView(APIView):
         except User.DoesNotExist:
             return Response({'message': f'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
+
+
 class UnfollowUserView(APIView):
     def post(self, request, code):
         user = request.user
@@ -48,5 +56,19 @@ class UnfollowUserView(APIView):
                 return Response({'message': f'You have unfollowed user'})
             else:
                 return Response({'message': f'You are not following user'})
+        except User.DoesNotExist:
+            return Response({'message': f'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+class FollowingCheckView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, following_user_id):
+        try:
+            user = request.user
+            following_user = User.objects.get(id=following_user_id)
+            is_following = Follow.objects.filter(follower=user, following=following_user).exists()
+            return Response({'is_following': is_following})
         except User.DoesNotExist:
             return Response({'message': f'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
