@@ -13,6 +13,8 @@ from django.db import transaction
 
 from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer, ProfileInformationSerializer
 from rest_framework.views import APIView
+from recipes.models import Recipes
+from recipes.serializers import RecipesSerializer
 
 
 
@@ -104,5 +106,7 @@ class GetUsersProfileInformation(APIView):
     def get(self, request, code, *args, **kwargs):
         user = get_object_or_404(User, id=code)
         serializer = ProfileInformationSerializer(user)
-        
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        recipes = Recipes.objects.filter(user=user)
+        recipes_serializer = RecipesSerializer(recipes, many=True)
+
+        return Response([serializer.data, recipes_serializer], status=status.HTTP_200_OK)
