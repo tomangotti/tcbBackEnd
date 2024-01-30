@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ususers.apps.UsusersConfig',
     'messaging.apps.MessagingConfig',
     'social.apps.SocialConfig',
+    'recipeCollections.apps.RecipecollectionsConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',
