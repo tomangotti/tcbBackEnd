@@ -1,6 +1,7 @@
 from django.db import models
 from recipes.models import Recipes
 from django.contrib.auth.models import User
+from .models import Cellections
 
 
 class Collections(models.Model):
