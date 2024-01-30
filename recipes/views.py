@@ -354,30 +354,6 @@ class DeleteRecipe(APIView):
         return Response({'message': 'Recipe deleted successfully'}, status=status.HTTP_200_OK)
     
 
-
-
-# class AddNewRatingView(APIView):
-#     serializer_class = RatingsSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         recipe_id = request.data.get('recipe_id')
-#         user_id = request.data.get('user_id')
-#         rating_value = request.data.get('rating')
-
-#         try:
-#             recipe = Recipes.objects.get(pk=recipe_id)
-#             existing_rating = ratings.objects.filter(recipe=recipe, user=user_id).first()
-#             if existing_rating:
-#                 existing_rating.delete()
-
-            
-#             rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
-#             rating.save()
-
-#             return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class AddNewRatingView(APIView):
     serializer_class = RatingsSerializer
 
@@ -411,14 +387,13 @@ class AddNewRatingView(APIView):
 
 
 
-# class GetAllInfo(APIView):
-#     def get(self, request):
-#         try:
-#             recipe = Recipes.objects.all()
-#             users = User.objects.all()
-#             recipe_serializer = RecipesSerializer(recipe, many=True)
-#             users_serializer = SavedUsersSerializer(users, many=True)
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# new recipe classes
+    
+class GetUsersRecipes(APIView):
+    serializer_class = RecipesSerializer
 
-#         return Response({'recipes': recipe_serializer.data, 'users': users_serializer.data}, status=status.HTTP_200_OK)
+    def get(self, request, code, format=None):
+        user = get_object_or_404(User, id=code)
+        recipes = user.recipes_set.all()
+        serializer = RecipesSerializer(recipes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
