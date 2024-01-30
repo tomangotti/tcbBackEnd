@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'messaging.apps.MessagingConfig',
     'social.apps.SocialConfig',
     'recipeCollections.apps.RecipecollectionsConfig',
+    'favorites.apps.FavoritesConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',

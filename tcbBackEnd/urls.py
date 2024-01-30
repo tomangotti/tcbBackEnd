@@ -15,6 +15,7 @@ urlpatterns = [
     path('messaging/', include("messaging.urls")),
     path('social/', include("social.urls")),
     path('recipeCollections/', include("recipeCollections.urls")),
+    path('favorites/', include("favorites.urls")),
 ]
 
 # if settings.DEBUG:
