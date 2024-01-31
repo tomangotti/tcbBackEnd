@@ -9,6 +9,7 @@ from recipes.models import Recipes
 from django.contrib.auth.models import User
 from recipeCollections.models import Collections
 from .models import FavoriteRecipes, FavoriteCollections
+from .serializer import FavoriteRecipeSerializer, FavoriteCollectionSerializer
 
 
 # Create your views here.
@@ -56,7 +57,7 @@ class AddCollectionToFavorites(APIView):
         favorite.save()
         return Response(status=status.HTTP_200_OK)
     
-class RemoveCollectioFromFavorties(APIView):
+class RemoveCollectionFromFavorites(APIView):
     def get_user(self, user_id):
         return get_object_or_404(User, pk=user_id)
 
@@ -69,3 +70,19 @@ class RemoveCollectioFromFavorties(APIView):
         favorite = FavoriteCollections.objects.filter(user=user, collection=collection)
         favorite.delete()
         return Response(status=status.HTTP_200_OK)
+    
+
+class GetUsersFavoriteRecipes(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        favorites = FavoriteRecipes.objects.filter(user=user)
+        serializer = FavoriteRecipeSerializer(favorites, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetUsersFavoriteCollections(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        favorites = FavoriteCollections.objects.filter(user=user)
+        serializer = FavoriteCollectionSerializer(favorites, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
