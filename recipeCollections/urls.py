@@ -6,7 +6,7 @@ from .views import GetUsersCollections, PostNewCollection, AddRecipeToCollection
 
 
 urlpatterns = [
-    path("get/<str:code>", GetUsersCollections.as_view()),
+    path("user/get/<str:code>", GetUsersCollections.as_view()),
     path("post-new-collection/<str:code>", PostNewCollection.as_view()),
     path("add-recipe/<int:collection_id>/<int:recipe_id>", AddRecipeToCollection.as_view()),
     path("remove-recipe/<int:collection_id>/<int:recipe_id>", RemoveRecipeFromCollection.as_view()),

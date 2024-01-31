@@ -394,6 +394,7 @@ class GetUsersRecipes(APIView):
 
     def get(self, request, code, format=None):
         user = get_object_or_404(User, id=code)
+        
         recipes = user.recipes_set.all()
         serializer = RecipesSerializer(recipes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
