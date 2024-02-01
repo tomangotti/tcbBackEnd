@@ -66,3 +66,4 @@ class ratings(models.Model):
     rating = models.IntegerField()
     recipe = models.ForeignKey(Recipes, related_name='ratings', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+

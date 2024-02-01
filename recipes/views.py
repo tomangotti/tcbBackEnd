@@ -376,14 +376,15 @@ class AddNewRatingView(APIView):
             if ratings.objects.filter(recipe=recipe_id, user=user_id):
                 oldrating = ratings.objects.filter(recipe=recipe_id, user=user_id)
                 oldrating.delete()
-            else:
-                rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
-                rating.save()
-                return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
+                
+            rating = ratings(recipe=recipe_id, user=user_id, rating=rating_value)
+            rating.save()
+            return Response({'message': 'Rating added successfully'}, status=status.HTTP_201_CREATED)
             
 
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 
