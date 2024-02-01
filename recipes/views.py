@@ -386,6 +386,20 @@ class AddNewRatingView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+class GetUsersRecipeRating(APIView):
+    serializer_class = RatingsSerializer
+
+    def get(self, request, user_id, recipe_id, format=None):
+
+        if ratings.objects.filter(recipe=recipe_id, user=user_id).exists():
+            rating = ratings.objects.get(recipe=recipe_id, user=user_id)
+            serializer = RatingsSerializer(rating)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else :
+            return Response({'message': 'No rating found'}, status=status.HTTP_200_OK)
+        
+    
+
 
 
 # new recipe classes
