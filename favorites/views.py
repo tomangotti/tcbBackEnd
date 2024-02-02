@@ -86,3 +86,20 @@ class GetUsersFavoriteCollections(APIView):
         favorites = FavoriteCollections.objects.filter(user=user)
         serializer = FavoriteCollectionSerializer(favorites, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetSpecificFavoriteRecipeCheck(APIView):
+    def get_user(self, user_id):
+        return get_object_or_404(User, pk=user_id)
+
+    def get_recipe(self, recipe_id):
+        return get_object_or_404(Recipes, pk=recipe_id)
+
+    def get(self, request, user_id, recipe_id):
+        user = self.get_user(user_id)
+        recipe = self.get_recipe(recipe_id)
+        favorite = FavoriteRecipes.objects.filter(user=user, recipe=recipe)
+        if favorite:
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
