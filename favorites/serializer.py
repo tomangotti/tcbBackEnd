@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
 from recipes.models import Recipes
+from recipes.serializers import RecipesSerializer
 from django.contrib.auth.models import User
 from .models import FavoriteRecipes, FavoriteCollections
 from recipeCollections.models import Collections
 
+
 class FavoriteRecipeSerializer(serializers.ModelSerializer):
-    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipes.objects.all())
+    recipe = RecipesSerializer()
 
     class Meta:
         model = FavoriteRecipes
