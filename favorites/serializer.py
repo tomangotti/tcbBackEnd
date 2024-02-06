@@ -6,9 +6,16 @@ from .models import FavoriteRecipes, FavoriteCollections
 from recipeCollections.models import Collections
 
 class FavoriteRecipeSerializer(serializers.ModelSerializer):
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipes.objects.all())
+
     class Meta:
         model = FavoriteRecipes
         fields = ('id', 'user', 'recipe')
+
+# class FavoriteRecipeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = FavoriteRecipes
+#         fields = ('id', 'user', 'recipe')
 
 class FavoriteCollectionSerializer(serializers.ModelSerializer):
     class Meta:
