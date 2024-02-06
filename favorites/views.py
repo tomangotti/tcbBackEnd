@@ -103,3 +103,16 @@ class GetSpecificFavoriteRecipeCheck(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+
+class ClearAllFavorites(APIView):
+    def get_user(self, user_id):
+        return get_object_or_404(User, pk=user_id)
+
+    def post(self, request, user_id):
+        user = self.get_user(user_id)
+        favorite_recipes = FavoriteRecipes.objects.filter(user=user)
+        favorite_collections = FavoriteCollections.objects.filter(user=user)
+        favorite_recipes.delete()
+        favorite_collections.delete()
+        return Response(status=status.HTTP_200_OK)
