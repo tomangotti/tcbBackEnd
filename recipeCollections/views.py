@@ -9,6 +9,19 @@ from django.contrib.auth.models import User
 from .models import Collections
 from .serializer import CollectionSerializer
 
+
+# class Collections(models.Model):
+#     name = models.CharField(max_length=50)
+#     description = models.TextField(max_length=5000)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+#     recipes = models.ManyToManyField(Recipes,related_name='collections', blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+    
+
+#     def __str__ (self):
+#         return self.name
+
 class GetUsersCollections(APIView):
     def get(self, request, code):
         user = code
@@ -30,6 +43,8 @@ class PostNewCollection(APIView):
             collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'])
             print(collection)
             collection.save()
+            for recipe in serializer.data['recipes']:
+                collection.recipes.add(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
