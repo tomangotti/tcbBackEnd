@@ -43,7 +43,7 @@ class PostNewCollection(APIView):
             collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'])
             print(collection)
             collection.save()
-            for recipe_id in serializer.data.get['recipes', []]:
+            for recipe_id in serializer.data.get('recipes', []):
                 recipe = get_object_or_404(Recipes, pk=recipe_id)
                 collection.recipes.add(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
