@@ -96,3 +96,13 @@ class DeleteCollection(APIView):
         collection = self.get_collection(collection_id)
         collection.delete()
         return Response(status=status.HTTP_200_OK)
+    
+
+class GetSingleCollection(APIView):
+    def get_collection(self, collection_id):
+        return get_object_or_404(Collections, pk=collection_id)
+
+    def get(self, request, collection_id):
+        collection = self.get_collection(collection_id)
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data, status=status.HTTP_200_OK)
