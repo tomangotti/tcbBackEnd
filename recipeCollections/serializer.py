@@ -7,7 +7,7 @@ from .models import Collections
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    recipes = RecipesSerializer(many=True, read_only=True)
+    recipes = RecipesSerializer(many=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
