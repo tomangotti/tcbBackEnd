@@ -29,31 +29,6 @@ class GetUsersCollections(APIView):
         serializer = CollectionSerializer(collections, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# class PostNewCollection(APIView):
-#     def get_user(self, user_id):
-#         return get_object_or_404(User, pk=user_id)
-
-#     def post(self, request, code):
-#         user_id = code
-#         user = self.get_user(user_id)
-#         print(request.data)
-#         serializer = CollectionSerializer(data=request.data)
-#         print(serializer)
-
-#         if serializer.is_valid():
-#             collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'])
-#             print(collection)
-#             collection.save()
-#             for recipe_id in serializer.data.get('recipes', []):
-#                 recipe = get_object_or_404(Recipes, pk=recipe_id)
-#                 collection.recipes.add(recipe)
-                
-#             collection.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             print(serializer.errors)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class PostNewCollection(APIView):
     def get_user(self, user_id):
         return get_object_or_404(User, pk=user_id)
@@ -64,25 +39,22 @@ class PostNewCollection(APIView):
         print(request.data)
         serializer = CollectionSerializer(data=request.data)
         print(serializer)
-        
+
         if serializer.is_valid():
-            # Update to use the list of recipe IDs directly
-            recipes_ids = serializer.validated_data.get('recipes', [])
-            
-            collection = Collections.objects.create(
-                user=user,
-                name=serializer.validated_data['name'],
-                description=serializer.validated_data['description']
-            )
-
-            for recipe_id in recipes_ids:
-                recipe = get_object_or_404(Recipes, pk=recipe_id)
-                collection.recipes.add(recipe)
-
+            collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'], recipes=serializer.data['recipes'])
+            print(collection)
+            collection.save()
+            # for recipe_id in serializer.data.get('recipes', []):
+            #     recipe = get_object_or_404(Recipes, pk=recipe_id)
+            #     collection.recipes.add(recipe)
+                
+            # collection.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             print(serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class AddRecipeToCollection(APIView):
     def get_collection(self, collection_id):

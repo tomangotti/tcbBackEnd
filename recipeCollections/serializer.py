@@ -8,22 +8,11 @@ from .models import Collections
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    recipes = serializers.ListField(
-        child=serializers.PrimaryKeyRelatedField(queryset=Recipes.objects.all()),
-        write_only=True
-    )
+    recipes = RecipesSerializer(many=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Collections
         fields = ('id', 'name', 'description', 'user', 'recipes', 'user_username')
 
-    def create(self, validated_data):
-        recipes_data = validated_data.pop('recipes', [])
-        collection = Collections.objects.create(**validated_data)
-
-        for recipe_id in recipes_data:
-            recipe = get_object_or_404(Recipes, pk=recipe_id)
-            collection.recipes.add(recipe)
-
-        return collection
+    
