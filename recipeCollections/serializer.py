@@ -4,7 +4,6 @@ from recipes.models import Recipes
 from recipes.serializers import RecipesSerializer
 from django.contrib.auth.models import User
 from .models import Collections
-from ususers.models import User
 
 
 class CollectionSerializer(serializers.ModelSerializer):
