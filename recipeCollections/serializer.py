@@ -8,11 +8,11 @@ from .models import Collections
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    recipes_detials = RecipesSerializer(source='recipes', many=True, read_only=True)
+    recipes_details = RecipesSerializer(source='recipes', many=True, read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Collections
-        fields = ('id', 'name', 'description', 'user', 'recipes', 'user_username', 'recipes_detials')
+        fields = ('id', 'name', 'description', 'user', 'recipes', 'user_username', 'recipes_details')
 
     
