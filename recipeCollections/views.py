@@ -46,6 +46,8 @@ class PostNewCollection(APIView):
             for recipe_id in serializer.data.get('recipes', []):
                 recipe = get_object_or_404(Recipes, pk=recipe_id)
                 collection.recipes.add(recipe)
+                
+            collection.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             print(serializer.errors)
