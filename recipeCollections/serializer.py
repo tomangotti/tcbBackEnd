@@ -23,7 +23,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         collection = Collections.objects.create(**validated_data)
 
         for recipe_id in recipes_data:
-            recipe = get_object_or_404(Recipes, pk=recipe_id.pk)
+            recipe = get_object_or_404(Recipes, pk=recipe_id)
             collection.recipes.add(recipe)
 
         return collection
