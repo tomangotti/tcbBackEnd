@@ -15,6 +15,8 @@ from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializ
 from rest_framework.views import APIView
 from recipes.models import Recipes
 from recipes.serializers import RecipesSerializer
+from recipeCollections.models import Collections
+from recipeCollections.serializer import CollectionSerializer
 
 
 
@@ -108,5 +110,7 @@ class GetUsersProfileInformation(APIView):
         serializer = ProfileInformationSerializer(user)
         recipes = Recipes.objects.filter(user=user)
         recipes_serializer = RecipesSerializer(recipes, many=True)
+        collections = Collections.objects.filter(user=user)
+        collections_serializer = CollectionSerializer(collections, many=True)
 
-        return Response([serializer.data, recipes_serializer.data], status=status.HTTP_200_OK)
+        return Response([serializer.data, recipes_serializer.data, collections_serializer.data], status=status.HTTP_200_OK)
