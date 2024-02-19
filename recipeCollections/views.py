@@ -94,11 +94,12 @@ class GetCollectionDetails(APIView):
     
 
 class DeleteCollection(APIView):
-    def get_collection(self, collection_id):
-        return get_object_or_404(Collections, pk=collection_id)
-
+    def get_collection(self, collection_id, user_id):
+        return get_object_or_404(Collections, pk=collection_id, user=user_id)
+    
     def delete(self, request, collection_id):
-        collection = self.get_collection(collection_id)
+        user = request.user
+        collection = self.get_collection(collection_id, user.id)
         collection.delete()
         return Response(status=status.HTTP_200_OK)
     
@@ -111,3 +112,17 @@ class GetSingleCollection(APIView):
         collection = self.get_collection(collection_id)
         serializer = CollectionSerializer(collection)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class UpdateCollection(APIView):
+    def get_collection(self, collection_id):
+        return get_object_or_404(Collections, pk=collection_id)
+
+    def put(self, request, collection_id):
+        collection = self.get_collection(collection_id)
+        serializer = CollectionSerializer(collection, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -104,7 +104,6 @@ class EditUser(RetrieveAPIView):
 
 class GetUsersProfileInformation(APIView):
     permission_classes = [permissions.IsAuthenticated]
-
     def get(self, request, code, *args, **kwargs):
         user = get_object_or_404(User, id=code)
         serializer = ProfileInformationSerializer(user)
