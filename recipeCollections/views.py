@@ -98,6 +98,8 @@ class DeleteCollection(APIView):
         return get_object_or_404(Collections, pk=collection_id, user=user_id)
     
     def delete(self, request, collection_id):
+        print(collection_id)
+        print(request.user.id)
         user = request.user
         collection = self.get_collection(collection_id, user.id)
         collection.delete()
