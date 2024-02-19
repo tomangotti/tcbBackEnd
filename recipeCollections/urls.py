@@ -14,3 +14,4 @@ urlpatterns = [
     path("get-single/<int:collection_id>", GetSingleCollection.as_view()),
     path("update/<int:collection_id>", UpdateCollection.as_view()),
 ]
+

@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 
 from recipes.models import Recipes
 from django.contrib.auth.models import User
 from .models import Collections
 from .serializer import CollectionSerializer
+from ususers.serializers import UserSerializer
 
 
 # class Collections(models.Model):
@@ -94,14 +95,19 @@ class GetCollectionDetails(APIView):
     
 
 class DeleteCollection(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_collection(self, collection_id, user_id):
         return get_object_or_404(Collections, pk=collection_id, user=user_id)
     
     def delete(self, request, collection_id):
         print(collection_id)
-        print(request.user.id)
+        print(request.user)
+        
         user = request.user
-        collection = self.get_collection(collection_id, user.id)
+        user_serializer = UserSerializer(user)
+        
+        collection = self.get_collection(collection_id, user_serializer.data['id'])
         collection.delete()
         return Response(status=status.HTTP_200_OK)
     
