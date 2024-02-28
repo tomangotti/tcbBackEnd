@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import   GetUsersRecipes, AddNewRatingView, DeleteRecipe, EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView, GetUsersRecipeRating 
+from .views import   GetFeedRecipes, GetUsersRecipes, AddNewRatingView, DeleteRecipe, EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView, GetUsersRecipeRating 
 
 urlpatterns = [
     path("recipe-saved", PostNewRecipe.as_view()),
@@ -21,6 +21,8 @@ urlpatterns = [
     path('ratings/new', AddNewRatingView.as_view()),
     path('users/<str:code>', GetUsersRecipes.as_view()),
     path('<str:recipe_id>/ratings/<str:user_id>',GetUsersRecipeRating.as_view()),
+    path('feed', GetFeedRecipes.as_view()),
 ]
+
 
 
