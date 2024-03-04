@@ -166,15 +166,13 @@ class AddNewRatingView(APIView):
             print(user_id)
             print(rating)
 
-            if CollectionRating.objects.filter(user=user_id, collection=collection_id).exists():
-                rating = CollectionRating.objects.get(user=user_id, collection=collection_id)
-                rating.rating = rating
-                rating.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                rating = CollectionRating.objects.create(user=user_id, collection=collection_id, rating=rating)
-                rating.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            if CollectionRating.objects.filter(user=user_id, collection=collection_id):
+                old_rating = CollectionRating.objects.get(user=user_id, collection=collection_id)
+                old_rating.delete()
+
+            rating = CollectionRating(user=user_id, collection=collection_id, rating=rating)
+            rating.save()
+            return Response({'message': 'Rating added successfully'}, status=status.HTTP_200_OK)
             
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
