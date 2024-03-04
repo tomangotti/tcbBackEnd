@@ -376,7 +376,6 @@ class AddNewRatingView(APIView):
     serializer_class = RatingsSerializer
 
     def post(self, request, *args, **kwargs):
-        print("hello world")
         
         serializer = RatingsSerializer(data=request.data)
         print(serializer)

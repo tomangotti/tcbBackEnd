@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 
 from recipes.models import Recipes
 from django.contrib.auth.models import User
-from .models import Collections
-from .serializer import CollectionSerializer
+from .models import Collections, CollectionRating
+from .serializer import CollectionSerializer, CollectionRatingSerializer
 from ususers.serializers import UserSerializer
 
 
@@ -134,3 +134,47 @@ class UpdateCollection(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class GetUsersCollectionRating(APIView):
+    seriaizer_class = CollectionRatingSerializer
+
+    def get(self, request, user_id, collection_id, format=None):
+
+        if CollectionRating.objects.filter(user=user_id, collection=collection_id).exists():
+            rating = CollectionRating.objects.get(user=user_id, collection=collection_id)
+            serializer = CollectionRatingSerializer(rating)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'No rating found'},status=status.HTTP_200_OK)
+        
+
+
+class AddNewRatingView(APIView):
+    serializer_class = CollectionRatingSerializer
+
+    def post(self, request):
+        serializer = CollectionRatingSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+
+            collection_id = validated_data['collection']
+            user_id = validated_data['user']
+            rating = validated_data['rating']
+
+            print(collection_id)
+            print(user_id)
+            print(rating)
+
+            if CollectionRating.objects.filter(user=user_id, collection=collection_id).exists():
+                rating = CollectionRating.objects.get(user=user_id, collection=collection_id)
+                rating.rating = rating
+                rating.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                rating = CollectionRating.objects.create(user=user_id, collection=collection_id, rating=rating)
+                rating.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

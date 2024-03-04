@@ -19,4 +19,3 @@ class CollectionSerializer(serializers.ModelSerializer):
         model = Collections
         fields = ('id', 'name', 'description', 'user', 'recipes', 'user_username', 'recipes_details', 'average_rating')
 
-    
