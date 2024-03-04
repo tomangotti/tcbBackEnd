@@ -35,7 +35,7 @@ class RemoveRecipeFromFavorites(APIView):
     def get_recipe(self, recipe_id):
         return get_object_or_404(Recipes, pk=recipe_id)
 
-    def post(self, request, user_id, recipe_id):
+    def delete(self, request, user_id, recipe_id):
         user = self.get_user(user_id)
         recipe = self.get_recipe(recipe_id)
         favorite = FavoriteRecipes.objects.filter(user=user, recipe=recipe)
@@ -64,7 +64,7 @@ class RemoveCollectionFromFavorites(APIView):
     def get_collection(self, collection_id):
         return get_object_or_404(Collections, pk=collection_id)
 
-    def post(self, request, user_id, collection_id):
+    def delete(self, request, user_id, collection_id):
         user = self.get_user(user_id)
         collection = self.get_collection(collection_id)
         favorite = FavoriteCollections.objects.filter(user=user, collection=collection)
