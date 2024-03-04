@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import ClearAllFavorites, AddRecipeToFavorites, RemoveRecipeFromFavorites, AddCollectionToFavorites, RemoveCollectionFromFavorites, GetUsersFavoriteRecipes, GetUsersFavoriteCollections, GetSpecificFavoriteRecipeCheck
+from .views import GetSpecificFavoriteCollectionCheck, ClearAllFavorites, AddRecipeToFavorites, RemoveRecipeFromFavorites, AddCollectionToFavorites, RemoveCollectionFromFavorites, GetUsersFavoriteRecipes, GetUsersFavoriteCollections, GetSpecificFavoriteRecipeCheck
 
 urlpatterns = [
     path('recipes/user/get/<str:user_id>', GetUsersFavoriteRecipes.as_view()),
@@ -12,5 +12,6 @@ urlpatterns = [
     path('collections/add/<str:user_id>/<int:collection_id>', AddCollectionToFavorites.as_view()),
     path('collections/remove/<str:user_id>/<int:collection_id>', RemoveCollectionFromFavorites.as_view()),
     path('recipes/check/<str:user_id>/<int:recipe_id>', GetSpecificFavoriteRecipeCheck.as_view()),
+    path('collections/check/<str:user_id>/<int:collection_id>', GetSpecificFavoriteCollectionCheck.as_view()),
     path('clear/<str:user_id>', ClearAllFavorites.as_view()),
 ]

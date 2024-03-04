@@ -105,6 +105,25 @@ class GetSpecificFavoriteRecipeCheck(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
 
+class GetSpecificFavoriteCollectionCheck(APIView):
+    def get_user(self, user_id):
+        return get_object_or_404(User, pk=user_id)
+
+    def get_collection(self, collection_id):
+        return get_object_or_404(Collections, pk=collection_id)
+
+    def get(self, request, user_id, collection_id):
+        user = self.get_user(user_id)
+        collection = self.get_collection(collection_id)
+        favorite = FavoriteCollections.objects.filter(user=user, collection=collection)
+        if favorite:
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
+
 class ClearAllFavorites(APIView):
     def get_user(self, user_id):
         return get_object_or_404(User, pk=user_id)
