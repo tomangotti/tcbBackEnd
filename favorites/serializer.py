@@ -9,7 +9,6 @@ from recipeCollections.models import Collections
 
 class FavoriteRecipeSerializer(serializers.ModelSerializer):
     recipe = RecipesSerializer()
-    
     class Meta:
         model = FavoriteRecipes
         fields = ('id', 'user', 'recipe')
@@ -23,3 +22,4 @@ class FavoriteCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoriteCollections
         fields = ('id', 'user', 'collection')
+

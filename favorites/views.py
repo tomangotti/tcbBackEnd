@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from recipes.models import Recipes
 from django.contrib.auth.models import User
 from recipeCollections.models import Collections
+from recipeCollections.serializer import CollectionSerializer
 from .models import FavoriteRecipes, FavoriteCollections
 from .serializer import FavoriteRecipeSerializer, FavoriteCollectionSerializer
 
@@ -84,7 +85,12 @@ class GetUsersFavoriteCollections(APIView):
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         favorites = FavoriteCollections.objects.filter(user=user)
-        serializer = FavoriteCollectionSerializer(favorites, many=True)
+        list_collection = []
+        for favorite in favorites:
+            print(favorite.collection)
+            collection = Collections.objects.get(pk=favorite.collection.id)
+            list_collection.append(collection)
+        serializer = CollectionSerializer(list_collection, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
