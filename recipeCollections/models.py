@@ -11,6 +11,12 @@ class Collections(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def average_rating(self):
+        all_ratings = CollectionRating.objects.filter(collection=self)
+        if len(all_ratings) > 0:
+            return sum([x.rating for x in all_ratings]) / len(all_ratings)
+        else:
+            return 0
 
     def __str__ (self):
         return self.name
@@ -24,3 +30,4 @@ class CollectionRating(models.Model):
 
     def __str__ (self):
         return self.collection.name
+
