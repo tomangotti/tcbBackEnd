@@ -21,7 +21,7 @@ urlpatterns = [
     path('ratings/new', AddNewRatingView.as_view()),
     path('users/<str:code>', GetUsersRecipes.as_view()),
     path('<str:recipe_id>/ratings/<str:user_id>',GetUsersRecipeRating.as_view()),
-    path('feed/recipes', GetFeedRecipes.as_view()),
+    path('feed/recipes/<str:user_id>', GetFeedRecipes.as_view()),
     
 ]
 
