@@ -75,7 +75,7 @@ class GetFeedRecipes(APIView):
     
     def get_highest_rated_collections(self):
         return(
-            Collections.objects.annotate(rating_count=Count('collectionrating'))
+            Collections.objects.annotate(rating_count=Count('ratings'))
             .order_by('-rating_count')[:10]
         )
     
