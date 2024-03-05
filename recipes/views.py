@@ -50,7 +50,7 @@ class GetFeedRecipes(APIView):
     
     def get_most_favorited_recipes(self):
         return(
-            Recipes.objects.annotate(favorite_count=Count('favoriterecipes'))
+            Recipes.objects.annotate(favorite_count=Count('recipe'))
             .order_by('-favorite_count')[:10]
         )
     
@@ -69,7 +69,7 @@ class GetFeedRecipes(APIView):
     
     def get_most_favorited_collections(self):
         return(
-            Collections.objects.annotate(favorite_count=Count('favoritecollections'))
+            Collections.objects.annotate(favorite_count=Count('collection'))
             .order_by('-favorite_count')[:10]
         )
     
