@@ -154,14 +154,14 @@ class GetFeedRecipes(APIView):
                 pass
         
         data = [
-            {'most_recent_recipes': most_recent_data},
-            {'most_favorited_recipes': most_favorited_data},
-            {'highest_rated_recipes': highest_rated_data},
-            {'recipes_made_by_followed_users': recipes_made_by_followed_users_data},
-            {'most_recent_collections': most_recent_collections_data},
-            {'most_favorited_collections': most_favorited_collections_data},
-            {'highest_rated_collections': highest_rated_collections_data},
-            {'collections_made_by_followed_users': collections_made_by_followed_users_data},
+            {'name': "New Recipes", 'data': most_recent_data},
+            {'name': "Popular Recipes", 'data': most_favorited_data},
+            {'name': "Highest Rated Recipes", 'data': highest_rated_data},
+            {'name': "Recipes By Favorite Users", 'data': recipes_made_by_followed_users_data},
+            {'name': "New Collections", 'data': most_recent_collections_data},
+            {'name': "Popular Collections", 'data': most_favorited_collections_data},
+            {'name': "Highest Rated Collections", 'data': highest_rated_collections_data},
+            {'name': "Collections By Favorite Users", 'data': collections_made_by_followed_users_data},
         ]
 
         return Response(data, status=status.HTTP_200_OK)
