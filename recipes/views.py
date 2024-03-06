@@ -153,16 +153,16 @@ class GetFeedRecipes(APIView):
             except Recipes.DoesNotExist:
                 pass
         
-        data = {
-            'most_recent_recipes': most_recent_data,
-            'most_favorited_recipes': most_favorited_data,
-            'highest_rated_recipes': highest_rated_data,
-            'recipes_made_by_followed_users': recipes_made_by_followed_users_data,
-            'most_recent_collections': most_recent_collections_data,
-            'most_favorited_collections': most_favorited_collections_data,
-            'highest_rated_collections': highest_rated_collections_data,
-            'collections_made_by_followed_users': collections_made_by_followed_users_data,
-        }
+        data = [
+            {'most_recent_recipes': most_recent_data},
+            {'most_favorited_recipes': most_favorited_data},
+            {'highest_rated_recipes': highest_rated_data},
+            {'recipes_made_by_followed_users': recipes_made_by_followed_users_data},
+            {'most_recent_collections': most_recent_collections_data},
+            {'most_favorited_collections': most_favorited_collections_data},
+            {'highest_rated_collections': highest_rated_collections_data},
+            {'collections_made_by_followed_users': collections_made_by_followed_users_data},
+        ]
 
         return Response(data, status=status.HTTP_200_OK)
 
