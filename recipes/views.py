@@ -167,55 +167,6 @@ class GetFeedRecipes(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-# class GetFeedRecipes(APIView):
-#     serializer_class = RecipesSerializer
-
-#     def get_most_recent_recipes(self):
-#         return Recipes.objects.order_by('-created_at')[:10]
-
-#     def get_most_saved_recipes(self):
-#         return (
-#             Recipes.objects.annotate(saved_count=Count('savedrecipes'))
-#             .order_by('-saved_count')[:10]
-#         )
-
-#     def get(self, request, format=None):
-#         most_recent_recipes = self.get_most_recent_recipes()
-#         most_saved_recipes = self.get_most_saved_recipes()
-
-#         most_recent_serializer = RecipesSerializer(most_recent_recipes, many=True)
-#         most_saved_serializer = RecipesSerializer(most_saved_recipes, many=True)
-
-#         most_recent_data = most_recent_serializer.data
-#         most_saved_data = most_saved_serializer.data
-
-#         for recipe_data in most_recent_data:
-#             recipe_id = recipe_data['id']
-#             try:
-#                 recipe = Recipes.objects.get(pk=recipe_id)
-#                 if recipe.image:
-#                     image_url = request.build_absolute_uri(recipe.image.url)
-#                     recipe_data['image'] = image_url
-#             except Recipes.DoesNotExist:
-#                 pass
-
-#         for recipe_data in most_saved_data:
-#             recipe_id = recipe_data['id']
-#             try:
-#                 recipe = Recipes.objects.get(pk=recipe_id)
-#                 if recipe.image:
-#                     image_url = request.build_absolute_uri(recipe.image.url)
-#                     recipe_data['image'] = image_url
-#             except Recipes.DoesNotExist:
-#                 pass
-
-#         data = {
-#             'most_recent_recipes': most_recent_data,
-#             'most_saved_recipes': most_saved_data,
-#         }
-
-#         return Response(data, status=status.HTTP_200_OK)
-
 
 class GetIngredients(APIView):
     serializer_class = IngredientsSerializer
@@ -291,6 +242,7 @@ class PostNewRecipe(APIView):
             category = validated_data['category']
             servings = validated_data['servings']
             cook_time = validated_data['cook_time']
+            published = validated_data['published']
 
 
             if 'image' in validated_data:
@@ -298,7 +250,7 @@ class PostNewRecipe(APIView):
             else:
                 image = None  
 
-            newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user, category=category, servings=servings, cook_time=cook_time)
+            newRecipe = Recipes(name=name, description=description, instructions=instructions, image=image, user=user, category=category, servings=servings, cook_time=cook_time, published=published)
             newRecipe.save()
 
             ingredients_data = json.loads(request.data.get('ingredients', '[]'))  
@@ -467,6 +419,7 @@ class EditRecipe(APIView):
             recipe.category = serializer.validated_data['category']
             recipe.servings = serializer.validated_data['servings']
             recipe.cook_time = serializer.validated_data['cook_time']
+            recipe.published = serializer.validated_data['published']
 
             if 'image' in serializer.validated_data:
                 recipe.image = serializer.validated_data['image']
