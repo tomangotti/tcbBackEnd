@@ -51,19 +51,19 @@ class GetFeedRecipes(APIView):
     
     def get_most_favorited_recipes(self):
         return(
-            Recipes.objects.annotate(favorite_count=Count('recipe'))
+            Recipes.objects.annotate(favorite_count=Count('recipe')).filter(published=True)
             .order_by('-favorite_count')[:10]
         )
     
     def get_highest_rated_recipes(self):
         return(
-            Recipes.objects.annotate(rating_count=Count('ratings'))
+            Recipes.objects.annotate(rating_count=Count('ratings')).filter(published=True)
             .order_by('-rating_count')[:10]
         )
     
     def get_recipes_made_by_followed_users(self, user):
         followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
-        return Recipes.objects.filter(user__in=followed_users).order_by('-created_at')[:10]
+        return Recipes.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
 
     def get_most_recent_collections(self):
         return Collections.objects.order_by('-created_at')[:10]
