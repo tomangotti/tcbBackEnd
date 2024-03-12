@@ -13,8 +13,8 @@ class Recipes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=4)
     image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
     category = models.CharField(max_length=50, default="other")
-    servings = models.CharField(max_length=50, default="")
-    cook_time = models.CharField(max_length=50, default="")
+    servings = models.CharField(max_length=50, default="", blank=True)
+    cook_time = models.CharField(max_length=50, default="", blank=True)
 
     def average_rating(self):
         all_ratings = ratings.objects.filter(recipe=self)
