@@ -46,11 +46,8 @@ class GetFeedRecipes(APIView):
     serializer_class = RecipesSerializer
 
     def get_most_recent_recipes(self):
-        list = Recipes.objects.order_by('-created_at')[:10]
-        for recipe in list:
-            if recipe.published == False:
-                list.remove(recipe)
-        return list
+        return Recipes.objects.filter(published=True).order_by('-created_at')[:10]
+        
     
     def get_most_favorited_recipes(self):
         return(
