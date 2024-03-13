@@ -42,7 +42,7 @@ class PostNewCollection(APIView):
         print(serializer)
 
         if serializer.is_valid():
-            collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'])
+            collection = Collections.objects.create(user=user, name=serializer.data['name'], description=serializer.data['description'], published=serializer.data['published'])
             collection.recipes.set(serializer.data.get('recipes', []))
             print(collection)
             collection.save()
