@@ -26,7 +26,7 @@ class GetAllRecipes(APIView):
     serializer_class = RecipesSerializer
 
     def get(self, request, format=None):
-        recipes = Recipes.objects.all()
+        recipes = Recipes.objects.all().filter(published=True)
         serializer = RecipesSerializer(recipes, many=True)
         serializer_data = serializer.data
 
