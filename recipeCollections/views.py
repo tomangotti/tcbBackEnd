@@ -11,17 +11,11 @@ from .serializer import CollectionSerializer, CollectionRatingSerializer
 from ususers.serializers import UserSerializer
 
 
-# class Collections(models.Model):
-#     name = models.CharField(max_length=50)
-#     description = models.TextField(max_length=5000)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-#     recipes = models.ManyToManyField(Recipes,related_name='collections', blank=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-    
-
-#     def __str__ (self):
-#         return self.name
+class GetAllPublishedCollections(APIView):
+    def get(self, request):
+        collections = Collections.objects.filter(published=True).order_by('created_at')
+        serializer = CollectionSerializer(collections, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class GetUsersCollections(APIView):
     def get(self, request, code):

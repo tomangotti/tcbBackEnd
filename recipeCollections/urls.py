@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import AddNewRatingView, GetUsersCollectionRating, UpdateCollection ,GetUsersCollections, PostNewCollection, AddRecipeToCollection, RemoveRecipeFromCollection, DeleteCollection, GetSingleCollection
+from .views import GetAllPublishedCollections, AddNewRatingView, GetUsersCollectionRating, UpdateCollection ,GetUsersCollections, PostNewCollection, AddRecipeToCollection, RemoveRecipeFromCollection, DeleteCollection, GetSingleCollection
 
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path("update/<int:collection_id>", UpdateCollection.as_view()),
     path("<str:collection_id>/ratings/<str:user_id>", GetUsersCollectionRating.as_view()),
     path("ratings/new", AddNewRatingView.as_view()),
+    path("all", GetAllPublishedCollections.as_view())
 ]
 
 
