@@ -9,6 +9,7 @@ urlpatterns = [
     path('check-logged-in', CheckLoggedInView.as_view()),
     path('<str:code>/update', EditUser.as_view()),
     path('profile/<str:code>', GetUsersProfileInformation.as_view()),
+    path('all', GetAllUsers.as_view())
     
 ]
 
