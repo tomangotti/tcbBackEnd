@@ -107,9 +107,9 @@ class GetUsersProfileInformation(APIView):
     def get(self, request, code, *args, **kwargs):
         user = get_object_or_404(User, id=code)
         serializer = ProfileInformationSerializer(user)
-        recipes = Recipes.objects.filter(user=user)
+        recipes = Recipes.objects.filter(user=user).filter(published=True)
         recipes_serializer = RecipesSerializer(recipes, many=True)
-        collections = Collections.objects.filter(user=user)
+        collections = Collections.objects.filter(user=user).filter(published=True)
         collections_serializer = CollectionSerializer(collections, many=True)
 
         return Response([serializer.data, recipes_serializer.data, collections_serializer.data], status=status.HTTP_200_OK)
