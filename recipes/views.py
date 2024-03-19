@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from django.db import transaction
+from django.db.models import Avg
 
 import json
 from rest_framework import generics, status
@@ -57,8 +58,8 @@ class GetFeedRecipes(APIView):
     
     def get_highest_rated_recipes(self):
         return(
-            Recipes.objects.annotate(rating_count=Count('ratings')).filter(published=True)
-            .order_by('-rating_count')[:10]
+            Recipes.objects.annotate(avg_rating=Avg('ratings__rating')).filter(published=True)
+            .order_by('-avg_rating')[:10]
         )
     
     def get_recipes_made_by_followed_users(self, user):
