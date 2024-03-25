@@ -13,6 +13,10 @@ from django.db import transaction
 import random
 import string
 
+import os
+import smtplib
+import mailtrap as mt
+
 
 
 from .serializers import  RandomCodeSerializer, UserSerializer, UserLoginSerializer, CreateUserSerializer, ProfileInformationSerializer
@@ -175,3 +179,18 @@ class ChangeUserPassword(APIView):
         user.password = make_password(password)
         user.save()
         return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    
+
+
+
+class SendSampleEmail(APIView):
+    def get(self, request, *args, **kwargs):
+        mail = mt.Mail(
+            sender=mt.Address(email="mailtrap@example.com", name="Mailtrap Test"),
+            to=[mt.Address(email="tom.angotti11@gmail.com")],
+            subject="You are awesome!",
+            text="Congrats for sending test email with Mailtrap!",
+        )
+        api_token = os.environ.get('MAILTRAP_API_TOKEN')
+        client = mt.MailtrapClient(token=api_token)
+        client.send(mail)
