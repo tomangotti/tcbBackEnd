@@ -191,6 +191,13 @@ class SendSampleEmail(APIView):
             subject="You are awesome!",
             text="Congrats for sending test email with Mailtrap!",
         )
+        print(mail)
         api_token = os.environ.get('MAILTRAP_API_TOKEN')
+        print(api_token)
         client = mt.MailtrapClient(token=api_token)
         client.send(mail)
+
+        if client is None:
+            return Response({'error': 'Error sending email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response({'message': 'Email sent successfully'}, status=status.HTTP_200_OK)
