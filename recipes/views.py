@@ -68,7 +68,8 @@ class GetFeedRecipes(APIView):
         return Recipes.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
 
     def get_most_recent_collections(self):
-        return Collections.objects.filter(published=True).order_by('-created_at')[:10]
+        date_14_days_ago = datetime.now() - timedelta(days=21)
+        return Collections.objects.filter(published=True, created_at__gte=date_14_days_ago).order_by('-created_at')[:10]
     
     def get_most_favorited_collections(self):
         return(

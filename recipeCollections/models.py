@@ -8,7 +8,7 @@ class Collections(models.Model):
     description = models.TextField(max_length=5000)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     recipes = models.ManyToManyField(Recipes,related_name='collections', blank=True)
-    published = models.BooleanField(default=True)
+    published = models.BooleanField(default=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
