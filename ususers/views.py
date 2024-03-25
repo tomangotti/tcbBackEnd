@@ -133,7 +133,6 @@ class GetUsersProfileInformation(APIView):
     
 
 class CreateRandomCode(APIView):
-    permission_classes = [permissions.IsAuthenticated]
     def generate_random_code(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
@@ -145,7 +144,7 @@ class CreateRandomCode(APIView):
             sender=mt.Address(email="mailtrap@demomailtrap.com", name=title),
             to=[mt.Address(email=email)],
             subject=subject,
-            text=message,
+            text=code,
             category="Integration Test",
         )
         api_token = os.environ.get("MAILTRAP_API_TOKEN")
@@ -189,7 +188,7 @@ class ChangeUserPassword(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user')
         user = User.objects.get(id=user_id)
-        
+
         password = request.get('password')
         user.password = make_password(password)
         user.save()
