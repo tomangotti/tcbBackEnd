@@ -232,12 +232,11 @@ class GetUserSavedRecipes(APIView):
 class PostNewRecipe(APIView):
 
     def post(self, request, *args, **kwargs):
-        
+        print(request.data)
         recipe_serializer = RecipesSerializer(data=request.data)
 
         if recipe_serializer.is_valid():
             validated_data = recipe_serializer.validated_data
-            print(validated_data)
             name = validated_data['name']
             description = validated_data['description']
             instructions = validated_data['instructions']
