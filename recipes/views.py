@@ -10,7 +10,7 @@ import json
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from datetime import datetime, timedelta
 
 from .models import Recipes, ingredients, SavedRecipes, Cart, Tags, ratings
 from .serializers import  CartSerializer, RecipesSerializer, IngredientsSerializer, SavedARecipeSerializer, SavedUsersSerializer, TagsSerializer, RatingsSerializer
@@ -47,7 +47,8 @@ class GetFeedRecipes(APIView):
     serializer_class = RecipesSerializer
 
     def get_most_recent_recipes(self):
-        return Recipes.objects.filter(published=True).order_by('-created_at')[:10]
+        date_14_days_ago = datetime.now() - timedelta(days=14)
+        return Recipes.objects.filter(published=True, created_at__gte=date_14_days_ago).order_by('-created_at')[:10]
         
     
     def get_most_favorited_recipes(self):
