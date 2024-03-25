@@ -138,11 +138,23 @@ class CreateRandomCode(APIView):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
     def send_email(self, email, code):
-        pass
+        message = self.generate_random_code()
+        subject = "Password Reset Code"
+        title = "The Good Cook Book - login"
+        mail = mt.Mail(
+            sender=mt.Address(email="mailtrap@demomailtrap.com", name=title),
+            to=[mt.Address(email=email)],
+            subject=subject,
+            text=message,
+            category="Integration Test",
+        )
+        api_token = os.environ.get("MAILTRAP_API_TOKEN")
+        client = mt.MailtrapClient(token=api_token)
+        client.send(mail)
 
 
     def post(self, request, *args, **kwargs):
-        user_email = request.get('email')
+        user_email = request.data.get('email')
         user = User.objects.get(email=user_email)
         
         if user is None:
@@ -151,7 +163,7 @@ class CreateRandomCode(APIView):
         random_code = self.generate_random_code()
         code = RandomCode.objects.create(user=user, code=random_code, approved=False)
         code.save()
-        email = self.send_email(user_email, random_code)
+        email = self.send_email(user.email, random_code)
         if code is None:
             return Response({'error': 'Error creating code'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -161,7 +173,7 @@ class CreateRandomCode(APIView):
 class ApproveRandomCode(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):
-        code = request.get('code')
+        code = request.data.get('code')
         code_obj = RandomCode.objects.get(code=code)
 
         if code_obj is None:
@@ -169,13 +181,15 @@ class ApproveRandomCode(APIView):
         
         code_obj.approved = True
         code_obj.save()
-        return Response({'message': 'Code approved successfully'}, status=status.HTTP_200_OK)
+        return Response({'user_id': code_obj.user}, status=status.HTTP_200_OK)
     
 
 class ChangeUserPassword(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):
-        user = request.user
+        user_id = request.data.get('user')
+        user = User.objects.get(id=user_id)
+        
         password = request.get('password')
         user.password = make_password(password)
         user.save()
