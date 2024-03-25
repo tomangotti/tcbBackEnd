@@ -237,6 +237,7 @@ class PostNewRecipe(APIView):
 
         if recipe_serializer.is_valid():
             validated_data = recipe_serializer.validated_data
+            print(validated_data)
             name = validated_data['name']
             description = validated_data['description']
             instructions = validated_data['instructions']
@@ -245,7 +246,6 @@ class PostNewRecipe(APIView):
             servings = validated_data['servings']
             cook_time = validated_data['cook_time']
             published = validated_data['published']
-
 
             if 'image' in validated_data:
                 image = validated_data['image']

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-
+from .models import RandomCode
 from recipes.models import Recipes
 from social.models import Follow
 
@@ -50,4 +50,10 @@ class ProfileInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'recipes_count', 'followers_count', 'following_count')
-    
+
+class RandomCodeSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email', read_only=True)
+
+    class Meta:
+        model = RandomCode
+        fields = ('id', 'code', 'created_at', 'user', 'approved', 'email')

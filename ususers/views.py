@@ -10,13 +10,18 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
+import random
+import string
 
-from .serializers import UserSerializer, UserLoginSerializer, CreateUserSerializer, ProfileInformationSerializer
+
+
+from .serializers import  RandomCodeSerializer, UserSerializer, UserLoginSerializer, CreateUserSerializer, ProfileInformationSerializer
 from rest_framework.views import APIView
 from recipes.models import Recipes
 from recipes.serializers import RecipesSerializer
 from recipeCollections.models import Collections
 from recipeCollections.serializer import CollectionSerializer
+from .models import RandomCode
 
 
 
@@ -113,3 +118,60 @@ class GetUsersProfileInformation(APIView):
         collections_serializer = CollectionSerializer(collections, many=True)
 
         return Response([serializer.data, recipes_serializer.data, collections_serializer.data], status=status.HTTP_200_OK)
+    
+
+# class RandomCode(models.Model):
+#     code = models.CharField(max_length=6)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     approved = models.BooleanField(default=False)
+    
+
+class CreateRandomCode(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def generate_random_code(self):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+    def send_email(self, email, code):
+        pass
+
+
+    def post(self, request, *args, **kwargs):
+        user_email = request.get('email')
+        user = User.objects.get(email=user_email)
+        
+        if user is None:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        random_code = self.generate_random_code()
+        code = RandomCode.objects.create(user=user, code=random_code, approved=False)
+        code.save()
+        email = self.send_email(user_email, random_code)
+        if code is None:
+            return Response({'error': 'Error creating code'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response({'message': 'Code created successfully'}, status=status.HTTP_201_CREATED)
+    
+
+class ApproveRandomCode(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        code = request.get('code')
+        code_obj = RandomCode.objects.get(code=code)
+
+        if code_obj is None:
+            return Response({'error': 'Code not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        code_obj.approved = True
+        code_obj.save()
+        return Response({'message': 'Code approved successfully'}, status=status.HTTP_200_OK)
+    
+
+class ChangeUserPassword(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        password = request.get('password')
+        user.password = make_password(password)
+        user.save()
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
