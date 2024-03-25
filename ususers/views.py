@@ -16,6 +16,7 @@ import string
 import os
 import smtplib
 import mailtrap as mt
+from django.core.mail import send_mail
 
 
 
@@ -184,20 +185,25 @@ class ChangeUserPassword(APIView):
 
 
 class SendSampleEmail(APIView):
-    def get(self, request, *args, **kwargs):
+
+    def generate_random_code(self):
+        letters = string.ascii_uppercase
+        return ''.join(random.choice(letters) for _ in range(6))
+
+    def post(self, request, *args, **kwargs):
+        print('hello world')
+        
+        message = self.generate_random_code()
+        subject = request.data.get('subject')
+        title = request.data.get('title')
         mail = mt.Mail(
-            sender=mt.Address(email="mailtrap@example.com", name="Mailtrap Test"),
+            sender=mt.Address(email="mailtrap@demomailtrap.com", name=title),
             to=[mt.Address(email="tom.angotti11@gmail.com")],
-            subject="You are awesome!",
-            text="Congrats for sending test email with Mailtrap!",
+            subject=subject,
+            text=message,
+            category="Integration Test",
         )
-        print(mail)
-        api_token = os.environ.get('MAILTRAP_API_TOKEN')
-        print(api_token)
+        api_token = os.environ.get("MAILTRAP_API_TOKEN")
         client = mt.MailtrapClient(token=api_token)
         client.send(mail)
-
-        if client is None:
-            return Response({'error': 'Error sending email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
         return Response({'message': 'Email sent successfully'}, status=status.HTTP_200_OK)
