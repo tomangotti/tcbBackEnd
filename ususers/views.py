@@ -148,17 +148,23 @@ class CreateRandomCode(APIView):
             category="Integration Test",
         )
         api_token = os.environ.get("MAILTRAP_API_TOKEN")
+        
         client = mt.MailtrapClient(token=api_token)
         client.send(mail)
+        return True
 
 
     def post(self, request, *args, **kwargs):
         user_email = request.data.get('email')
         user = User.objects.get(email=user_email)
-        
+        print(user)
         if user is None:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
+        if RandomCode.objects.filter(user=user).exists():
+            old_code = RandomCode.objects.get(user=user)
+            old_code.delete()
+
         random_code = self.generate_random_code()
         code = RandomCode.objects.create(user=user, code=random_code, approved=False)
         code.save()
@@ -166,33 +172,41 @@ class CreateRandomCode(APIView):
         if code is None:
             return Response({'error': 'Error creating code'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        if email is False:
+            return Response({'error': 'Error sending email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({'message': 'Code created successfully'}, status=status.HTTP_201_CREATED)
     
 
 class ApproveRandomCode(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         code = request.data.get('code')
         code_obj = RandomCode.objects.get(code=code)
-
         if code_obj is None:
             return Response({'error': 'Code not found'}, status=status.HTTP_404_NOT_FOUND)
-        
         code_obj.approved = True
         code_obj.save()
-        return Response({'user_id': code_obj.user}, status=status.HTTP_200_OK)
+        return Response({'user_id': code_obj.user.id}, status=status.HTTP_200_OK)
+    
     
 
 class ChangeUserPassword(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    def post(self, request, *args, **kwargs):
-        user_id = request.data.get('user')
-        user = User.objects.get(id=user_id)
 
-        password = request.get('password')
-        user.password = make_password(password)
-        user.save()
-        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    def post(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        print(user_id)
+        user = User.objects.get(id=user_id)
+        print(user)
+        password = request.data.get('password')
+        print(password)
+        if RandomCode.objects.filter(user=user).exists():
+            code = RandomCode.objects.get(user=user)
+            if code.approved is True:
+                user.password = make_password(password)
+                user.save()
+                return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Code not found'}, status=status.HTTP_404_NOT_FOUND)
     
 
 
