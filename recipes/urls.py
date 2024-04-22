@@ -22,7 +22,7 @@ urlpatterns = [
     path('users/<str:code>', GetUsersRecipes.as_view()),
     path('<str:recipe_id>/ratings/<str:user_id>',GetUsersRecipeRating.as_view()),
     path('feed/recipes/<str:user_id>', GetFeedRecipes.as_view()),
-    path('feed/recipes/slim', GetSlimFeedRecipes.as_view())
+    path('feed/slim/recipes', GetSlimFeedRecipes.as_view())
     
 ]
 
