@@ -240,7 +240,7 @@ class SendSampleEmail(APIView):
 class DeleteAccount(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         user = request.user
         user.delete()
         return Response({'message': 'Account deleted successfully'}, status=status.HTTP_200_OK)
