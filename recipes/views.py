@@ -210,7 +210,7 @@ class GetSlimFeedRecipes(APIView):
         )
     
 
-    def get(self, request, user_id):
+    def get(self, request):
         most_recent_recipes = self.get_most_recent_recipes()
         most_favorited_recipes = self.get_most_favorited_recipes()
         highest_rated_recipes = self.get_highest_rated_recipes()
