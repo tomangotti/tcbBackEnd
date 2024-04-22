@@ -234,3 +234,13 @@ class SendSampleEmail(APIView):
         client = mt.MailtrapClient(token=api_token)
         client.send(mail)
         return Response({'message': 'Email sent successfully'}, status=status.HTTP_200_OK)
+    
+
+
+class DeleteAccount(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.delete()
+        return Response({'message': 'Account deleted successfully'}, status=status.HTTP_200_OK)
