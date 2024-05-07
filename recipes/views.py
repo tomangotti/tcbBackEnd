@@ -171,7 +171,11 @@ class GetFeedRecipes(APIView):
             {'name': "Collections By Favorite Users", 'data': collections_made_by_followed_users_data},
         ]
 
+        data = [item for item in data if item['data']]
+
         return Response(data, status=status.HTTP_200_OK)
+    
+
 
 class GetSlimFeedRecipes(APIView):
     serializer_class = RecipesSerializer
