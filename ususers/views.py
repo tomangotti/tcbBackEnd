@@ -27,6 +27,8 @@ from recipes.serializers import RecipesSerializer
 from recipeCollections.models import Collections
 from recipeCollections.serializer import CollectionSerializer
 from .models import RandomCode
+from .models import Links
+from .models import ProfileImage
 
 
 
@@ -244,3 +246,162 @@ class DeleteAccount(APIView):
         user = request.user
         user.delete()
         return Response({'message': 'Account deleted successfully'}, status=status.HTTP_200_OK)
+    
+
+
+
+
+
+class GetUsersLinks(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if Links.objects.filter(user=user).exists():
+            user_links = Links.objects.get(user=user)
+            return Response({'link_twitter': user_links.link_twitter, 'link_instagram': user_links.link_instagram, 'link_facebook': user_links.link_facebook, 'link_youtube': user_links.link_youtube}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Links not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+class AddUserLinks(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        link_twitter = request.data.get('link_twitter')
+        link_instagram = request.data.get('link_instagram')
+        link_facebook = request.data.get('link_facebook')
+        link_youtube = request.data.get('link_youtube')
+
+        if Links.objects.filter(user=user).exists():
+            user_links = Links.objects.get(user=user)
+            user_links.link_twitter = link_twitter
+            user_links.link_instagram = link_instagram
+            user_links.link_facebook = link_facebook
+            user_links.link_youtube = link_youtube
+            user_links.save()
+            return Response({'message': 'Links updated successfully'}, status=status.HTTP_200_OK)
+        
+        user_links = Links.objects.create(user=user, link_twitter=link_twitter, link_instagram=link_instagram, link_facebook=link_facebook, link_youtube=link_youtube)
+        user_links.save()
+        return Response({'message': 'Links created successfully'}, status=status.HTTP_201_CREATED)
+    
+
+class EditUserLinks(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        link_twitter = request.data.get('link_twitter')
+        link_instagram = request.data.get('link_instagram')
+        link_facebook = request.data.get('link_facebook')
+        link_youtube = request.data.get('link_youtube')
+
+        if Links.objects.filter(user=user).exists():
+            user_links = Links.objects.get(user=user)
+            user_links.link_twitter = link_twitter
+            user_links.link_instagram = link_instagram
+            user_links.link_facebook = link_facebook
+            user_links.link_youtube = link_youtube
+            user_links.save()
+            return Response({'message': 'Links updated successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Links not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+class DeleteUserLinks(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        if Links.objects.filter(user=user).exists():
+            user_links = Links.objects.get(user=user)
+            user_links.delete()
+            return Response({'message': 'Links deleted successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Links not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetProfileImage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            return Response({'image': profile_image.image.url}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+class AddProfileImage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        image = request.data.get('image')
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            profile_image.image = image
+            profile_image.save()
+            return Response({'message': 'Image updated successfully'}, status=status.HTTP_200_OK)
+        
+        profile_image = ProfileImage.objects.create(user=user, image=image)
+        profile_image.save()
+        return Response({'message': 'Image created successfully'}, status=status.HTTP_201_CREATED)
+    
+
+class EditProfileImage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        image = request.data.get('image')
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            profile_image.image = image
+            profile_image.save()
+            return Response({'message': 'Image updated successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+class DeleteProfileImage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            profile_image.delete()
+            return Response({'message': 'Image deleted successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+class GetProfileImageById(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, code, *args, **kwargs):
+        user = get_object_or_404(User, id=code)
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            profile_image_url = request.build_absolute_uri(profile_image.image.url)
+            return Response({'image': profile_image_url}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+class GetProfileImage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if ProfileImage.objects.filter(user=user).exists():
+            profile_image = ProfileImage.objects.get(user=user)
+            profile_image_url = request.build_absolute_uri(profile_image.image.url)
+            return Response({'image': profile_image_url}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
