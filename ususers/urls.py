@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import GetProfileImageById, AddProfileImage ,GetProfileImage, DeleteAccount,CreateRandomCode, ApproveRandomCode, ChangeUserPassword, SendSampleEmail, EditUser ,GetUserInfo, GetAllUsers, CreateNewUser, UserLoginView, CheckLoggedInView, GetUsersProfileInformation
+from .views import AddUserLinks, GetUsersLinks, GetUsersLinksById, GetProfileImageById, AddProfileImage ,GetProfileImage, DeleteAccount,CreateRandomCode, ApproveRandomCode, ChangeUserPassword, SendSampleEmail, EditUser ,GetUserInfo, GetAllUsers, CreateNewUser, UserLoginView, CheckLoggedInView, GetUsersProfileInformation
 
 urlpatterns = [
     path("getUserInfo", GetUserInfo.as_view()),
@@ -17,6 +17,9 @@ urlpatterns = [
     path('profile/image/get', GetProfileImage.as_view()),
     path('profile/image/add', AddProfileImage.as_view()),
     path('profile/image/user/<int:code>', GetProfileImageById.as_view()),
+    path('links/user/<int:code>', GetUsersLinksById.as_view()),
+    path('links/user/get', GetUsersLinks.as_view()),
+    path('links/user/add', AddUserLinks.as_view()),
 
 ]
 

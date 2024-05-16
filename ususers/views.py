@@ -264,6 +264,16 @@ class GetUsersLinks(APIView):
         return Response({'error': 'Links not found'}, status=status.HTTP_404_NOT_FOUND)
     
 
+class GetUsersLinksById(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, code, *args, **kwargs):
+        user = get_object_or_404(User, id=code)
+        if Links.objects.filter(user=user).exists():
+            user_links = Links.objects.get(user=user)
+            return Response({'link_twitter': user_links.link_twitter, 'link_instagram': user_links.link_instagram, 'link_facebook': user_links.link_facebook, 'link_youtube': user_links.link_youtube}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Links not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class AddUserLinks(APIView):
     permission_classes = [permissions.IsAuthenticated]
