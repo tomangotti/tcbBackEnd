@@ -231,9 +231,9 @@ class GetFeedRecipesV2(APIView):
             .order_by('-rating_count')[:10]
         )
     
-    def get_not_following_users(self):
-        print(User.objects.exclude(following__follower=self.request.user))
-        return User.objects.exclude(following__follower=self.request.user)
+    def get_not_following_users(self, user):
+        print(User.objects.exclude(following__follower=user))
+        return User.objects.exclude(following__follower=user)
     
     def get_collections_made_by_followed_users(self, user):
         followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
@@ -251,7 +251,7 @@ class GetFeedRecipesV2(APIView):
         collections_made_by_followed_users = self.get_collections_made_by_followed_users(user_id)
 
         
-        not_following_users = self.get_not_following_users()
+        not_following_users = self.get_not_following_users(user_id)
         print(not_following_users)
 
         most_recent_serializer = RecipesSerializer(most_recent_recipes, many=True)
