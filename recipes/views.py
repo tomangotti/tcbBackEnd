@@ -7,6 +7,7 @@ from django.db import transaction
 from django.db.models import Avg
 
 import json
+import random
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -231,9 +232,20 @@ class GetFeedRecipesV2(APIView):
             .order_by('-rating_count')[:10]
         )
     
-    def get_not_following_users(self, user):
-        return User.objects.exclude(following__follower=user)[:5]
+    def get_not_following_users(self, user, count=5):
+        not_following_users = User.objects.exclude(following__follower=user)
     
+        total_users = not_following_users.count()
+        if total_users <= count:
+            return not_following_users
+        
+        random_users = random.sample(list(not_following_users), count)
+        return random_users
+
+
+
+
+
     def get_collections_made_by_followed_users(self, user):
         followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
         return Collections.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
