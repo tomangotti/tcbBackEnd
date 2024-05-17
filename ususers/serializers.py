@@ -57,3 +57,10 @@ class RandomCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RandomCode
         fields = ('id', 'code', 'created_at', 'user', 'approved', 'email')
+
+
+class QuickGlanceSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(source='profileimage.image', read_only=True)
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'image')

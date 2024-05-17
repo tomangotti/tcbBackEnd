@@ -19,7 +19,8 @@ from recipeCollections.models import Collections, CollectionRating
 from social.models import Follow
 from favorites.models import FavoriteRecipes, FavoriteCollections
 from recipeCollections.serializer import CollectionSerializer, CollectionRatingSerializer
-
+from ususers.models import User, ProfileImage
+from ususers.serializers import QuickGlanceSerializer
 
 
 
@@ -86,6 +87,9 @@ class GetFeedRecipes(APIView):
             .order_by('-rating_count')[:10]
         )
     
+    def get_not_following_users(self):
+        return User.objects.exclude(following__follower=self.request.user)
+    
     def get_collections_made_by_followed_users(self, user):
         followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
         return Collections.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
@@ -95,10 +99,13 @@ class GetFeedRecipes(APIView):
         most_favorited_recipes = self.get_most_favorited_recipes()
         highest_rated_recipes = self.get_highest_rated_recipes()
         recipes_made_by_followed_users = self.get_recipes_made_by_followed_users(user_id)
+        
         most_recent_collections = self.get_most_recent_collections()
         most_favorited_collections = self.get_most_favorited_collections()
         highest_rated_collections = self.get_highest_rated_collections()
         collections_made_by_followed_users = self.get_collections_made_by_followed_users(user_id)
+
+        not_following_users = self.get_not_following_users()
 
         most_recent_serializer = RecipesSerializer(most_recent_recipes, many=True)
         most_favorited_serializer = RecipesSerializer(most_favorited_recipes, many=True)
@@ -110,6 +117,8 @@ class GetFeedRecipes(APIView):
         highest_rated_collections_serializer = CollectionSerializer(highest_rated_collections, many=True)
         collections_made_by_followed_users_serializer = CollectionSerializer(collections_made_by_followed_users, many=True)
 
+        not_following_users_serializer = QuickGlanceSerializer(not_following_users, many=True)
+
         most_recent_data = most_recent_serializer.data
         most_favorited_data = most_favorited_serializer.data
         highest_rated_data = highest_rated_serializer.data
@@ -119,6 +128,8 @@ class GetFeedRecipes(APIView):
         most_favorited_collections_data = most_favorited_collections_serializer.data
         highest_rated_collections_data = highest_rated_collections_serializer.data
         collections_made_by_followed_users_data = collections_made_by_followed_users_serializer.data
+
+        not_following_users_data = not_following_users_serializer.data
 
         for recipe_data in most_recent_data:
             recipe_id = recipe_data['id']
@@ -160,11 +171,26 @@ class GetFeedRecipes(APIView):
             except Recipes.DoesNotExist:
                 pass
         
+
+        for user_data in not_following_users_data:
+            user_id = user_data['id']
+            try:
+                user = User.objects.get(pk=user_id)
+                if ProfileImage.objects.filter(user=user):
+                    profile_image = ProfileImage.objects.get(user=user)
+                    if profile_image.image:
+                        image_url = request.build_absolute_uri(profile_image.image.url)
+                        user_data['image'] = image_url
+            except User.DoesNotExist:
+                pass
+
+
         data = [
             {'name': "Popular Recipes", 'data': most_favorited_data},
             {'name': "New Recipes", 'data': most_recent_data},
             {'name': "Recipes By Favorite Users", 'data': recipes_made_by_followed_users_data},
             {'name': "Popular Collections", 'data': most_favorited_collections_data},
+            {'name': "Users to Follow", 'data': not_following_users_data},
             {'name': "Top Rated Recipes", 'data': highest_rated_data},
             {'name': "New Collections", 'data': most_recent_collections_data},
             {'name': "Top Rated Collections", 'data': highest_rated_collections_data},
