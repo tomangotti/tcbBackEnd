@@ -232,8 +232,7 @@ class GetFeedRecipesV2(APIView):
         )
     
     def get_not_following_users(self, user):
-        print(User.objects.exclude(following__follower=user))
-        return User.objects.exclude(following__follower=user)
+        return User.objects.exclude(following__follower=user)[:5]
     
     def get_collections_made_by_followed_users(self, user):
         followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
@@ -252,7 +251,7 @@ class GetFeedRecipesV2(APIView):
 
         
         not_following_users = self.get_not_following_users(user_id)
-        print(not_following_users)
+        
 
         most_recent_serializer = RecipesSerializer(most_recent_recipes, many=True)
         most_favorited_serializer = RecipesSerializer(most_favorited_recipes, many=True)
@@ -265,7 +264,7 @@ class GetFeedRecipesV2(APIView):
         collections_made_by_followed_users_serializer = CollectionSerializer(collections_made_by_followed_users, many=True)
 
         not_following_users_serializer = QuickGlanceSerializer(not_following_users, many=True)
-        print(not_following_users_serializer)
+        
 
         most_recent_data = most_recent_serializer.data
         most_favorited_data = most_favorited_serializer.data
@@ -278,7 +277,7 @@ class GetFeedRecipesV2(APIView):
         collections_made_by_followed_users_data = collections_made_by_followed_users_serializer.data
 
         not_following_users_data = not_following_users_serializer.data
-        print(not_following_users_data)
+        
 
         for recipe_data in most_recent_data:
             recipe_id = recipe_data['id']
