@@ -87,6 +87,150 @@ class GetFeedRecipes(APIView):
             .order_by('-rating_count')[:10]
         )
     
+    
+    def get_collections_made_by_followed_users(self, user):
+        followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
+        return Collections.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
+
+    def get(self, request, user_id):
+        most_recent_recipes = self.get_most_recent_recipes()
+        most_favorited_recipes = self.get_most_favorited_recipes()
+        highest_rated_recipes = self.get_highest_rated_recipes()
+        recipes_made_by_followed_users = self.get_recipes_made_by_followed_users(user_id)
+        
+        most_recent_collections = self.get_most_recent_collections()
+        most_favorited_collections = self.get_most_favorited_collections()
+        highest_rated_collections = self.get_highest_rated_collections()
+        collections_made_by_followed_users = self.get_collections_made_by_followed_users(user_id)
+
+        
+
+        most_recent_serializer = RecipesSerializer(most_recent_recipes, many=True)
+        most_favorited_serializer = RecipesSerializer(most_favorited_recipes, many=True)
+        highest_rated_serializer = RecipesSerializer(highest_rated_recipes, many=True)
+        recipes_made_by_followed_users_serializer = RecipesSerializer(recipes_made_by_followed_users, many=True)
+
+        most_recent_collections_serializer = CollectionSerializer(most_recent_collections, many=True)
+        most_favorited_collections_serializer = CollectionSerializer(most_favorited_collections, many=True)
+        highest_rated_collections_serializer = CollectionSerializer(highest_rated_collections, many=True)
+        collections_made_by_followed_users_serializer = CollectionSerializer(collections_made_by_followed_users, many=True)
+
+        
+
+        most_recent_data = most_recent_serializer.data
+        most_favorited_data = most_favorited_serializer.data
+        highest_rated_data = highest_rated_serializer.data
+        recipes_made_by_followed_users_data = recipes_made_by_followed_users_serializer.data
+
+        most_recent_collections_data = most_recent_collections_serializer.data
+        most_favorited_collections_data = most_favorited_collections_serializer.data
+        highest_rated_collections_data = highest_rated_collections_serializer.data
+        collections_made_by_followed_users_data = collections_made_by_followed_users_serializer.data
+
+        
+
+        for recipe_data in most_recent_data:
+            recipe_id = recipe_data['id']
+            try:
+                recipe = Recipes.objects.get(pk=recipe_id)
+                if recipe.image:
+                    image_url = request.build_absolute_uri(recipe.image.url)
+                    recipe_data['image'] = image_url
+            except Recipes.DoesNotExist:
+                pass
+        
+        for recipe_data in most_favorited_data:
+            recipe_id = recipe_data['id']
+            try:
+                recipe = Recipes.objects.get(pk=recipe_id)
+                if recipe.image:
+                    image_url = request.build_absolute_uri(recipe.image.url)
+                    recipe_data['image'] = image_url
+            except Recipes.DoesNotExist:
+                pass
+
+        for recipe_data in highest_rated_data:
+            recipe_id = recipe_data['id']
+            try:
+                recipe = Recipes.objects.get(pk=recipe_id)
+                if recipe.image:
+                    image_url = request.build_absolute_uri(recipe.image.url)
+                    recipe_data['image'] = image_url
+            except Recipes.DoesNotExist:
+                pass
+        
+        for recipe_data in recipes_made_by_followed_users_data:
+            recipe_id = recipe_data['id']
+            try:
+                recipe = Recipes.objects.get(pk=recipe_id)
+                if recipe.image:
+                    image_url = request.build_absolute_uri(recipe.image.url)
+                    recipe_data['image'] = image_url
+            except Recipes.DoesNotExist:
+                pass
+        
+
+        
+
+
+        data = [
+            {'name': "Popular Recipes", 'data': most_favorited_data},
+            {'name': "New Recipes", 'data': most_recent_data},
+            {'name': "Recipes By Favorite Users", 'data': recipes_made_by_followed_users_data},
+            {'name': "Popular Collections", 'data': most_favorited_collections_data},
+            {'name': "Top Rated Recipes", 'data': highest_rated_data},
+            {'name': "New Collections", 'data': most_recent_collections_data},
+            {'name': "Top Rated Collections", 'data': highest_rated_collections_data},
+            {'name': "Collections By Favorite Users", 'data': collections_made_by_followed_users_data},
+        ]
+
+        data = [item for item in data if item['data']]
+
+        return Response(data, status=status.HTTP_200_OK)
+    
+
+
+
+class GetFeedRecipesV2(APIView):
+    serializer_class = RecipesSerializer
+
+    def get_most_recent_recipes(self):
+        date_14_days_ago = datetime.now() - timedelta(days=14)
+        return Recipes.objects.filter(published=True, created_at__gte=date_14_days_ago).order_by('-created_at')[:10]
+        
+    
+    def get_most_favorited_recipes(self):
+        return(
+            Recipes.objects.annotate(favorite_count=Count('recipe')).filter(published=True)
+            .order_by('-favorite_count')[:10]
+        )
+    
+    def get_highest_rated_recipes(self):
+        return(
+            Recipes.objects.annotate(avg_rating=Avg('ratings__rating')).filter(published=True)
+            .order_by('-avg_rating')[:10]
+        )
+    
+    def get_recipes_made_by_followed_users(self, user):
+        followed_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
+        return Recipes.objects.filter(user__in=followed_users).filter(published=True).order_by('-created_at')[:10]
+
+    def get_most_recent_collections(self):
+        date_14_days_ago = datetime.now() - timedelta(days=21)
+        return Collections.objects.filter(published=True, created_at__gte=date_14_days_ago).order_by('-created_at')[:10]
+    
+    def get_most_favorited_collections(self):
+        return(
+            Collections.objects.annotate(favorite_count=Count('collection')).filter(published=True)
+            .order_by('-favorite_count')[:10]
+        )
+    
+    def get_highest_rated_collections(self):
+        return(
+            Collections.objects.annotate(rating_count=Count('ratings')).filter(published=True)
+            .order_by('-rating_count')[:10]
+        )
+    
     def get_not_following_users(self):
         return User.objects.exclude(following__follower=self.request.user)
     
@@ -201,6 +345,12 @@ class GetFeedRecipes(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
     
+
+
+
+
+
+
 
 
 class GetSlimFeedRecipes(APIView):

@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import   GetFeedRecipes, GetSlimFeedRecipes, GetUsersRecipes, AddNewRatingView, DeleteRecipe, EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView, GetUsersRecipeRating 
+from .views import  GetFeedRecipesV2, GetFeedRecipes, GetSlimFeedRecipes, GetUsersRecipes, AddNewRatingView, DeleteRecipe, EditRecipe, ShareRecipeWithUser, RemoveRecipeFromCartView, GetUserCartView, DeleteRecipeView, GetAllRecipes, GetIngredients, GetRecipeDetails, GetUserSavedRecipes, AddOrRemoveSavedRecipeList, PostNewRecipe, AddRecipeToCartView, GetUsersRecipeRating 
 
 urlpatterns = [
     path("recipe-saved", PostNewRecipe.as_view()),
@@ -22,6 +22,8 @@ urlpatterns = [
     path('users/<str:code>', GetUsersRecipes.as_view()),
     path('<str:recipe_id>/ratings/<str:user_id>',GetUsersRecipeRating.as_view()),
     path('feed/recipes/<str:user_id>', GetFeedRecipes.as_view()),
-    path('feed/slim/recipes', GetSlimFeedRecipes.as_view())
+    path('feed/slim/recipes', GetSlimFeedRecipes.as_view()),
+    path('feed/v2/recipes/<str:user_id', GetFeedRecipesV2.as_view()),
+
 ]
 
