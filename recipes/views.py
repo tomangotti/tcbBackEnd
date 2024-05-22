@@ -827,9 +827,9 @@ class GetUsersRecipes(APIView):
 
 
 class GenerateNewRecipeRequest(APIView):
-    print("test")
+    serializer_class = RecipesSerializer
     
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         data = request.data
         print(data)
         recipe = generate_openai_recipe(data)
