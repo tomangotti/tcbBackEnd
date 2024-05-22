@@ -827,8 +827,11 @@ class GetUsersRecipes(APIView):
 
 
 class GenerateNewRecipeRequest(APIView):
+    print("test")
+    
     def post(self, request):
         data = request.data
+        print(data)
         recipe = generate_openai_recipe(data)
         return Response({'recipe': recipe}, status=status.HTTP_200_OK)
 
@@ -836,6 +839,7 @@ class GenerateNewRecipeRequest(APIView):
 
 def generate_openai_recipe(content):
     print("hello from ai response")
+    print(content)
     recipes = Recipes.objects.all()
     recipes_list = []
     for recipe in recipes:
