@@ -24,6 +24,13 @@ from ususers.models import User, ProfileImage
 from ususers.serializers import QuickGlanceSerializer
 
 
+import os
+
+from openai import OpenAI
+key = os.environ.get('OPENAI_API_SECRET_KEY')
+# key = ""
+client = OpenAI(api_key=key)
+
 
 class GetAllRecipes(APIView):
     serializer_class = RecipesSerializer
@@ -241,9 +248,6 @@ class GetFeedRecipesV2(APIView):
         
         random_users = random.sample(list(not_following_users), count)
         return random_users
-
-
-
 
 
     def get_collections_made_by_followed_users(self, user):
@@ -819,3 +823,50 @@ class GetUsersRecipes(APIView):
         recipes = user.recipes_set.all()
         serializer = RecipesSerializer(recipes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class GenerateNewRecipeRequest(APIView):
+    def post(self, request):
+        data = request.data
+        recipe = generate_openai_recipe(data)
+        return Response({'recipe': recipe}, status=status.HTTP_200_OK)
+
+
+
+def generate_openai_recipe(content):
+    print("hello from ai response")
+    recipes = Recipes.objects.all()
+    recipes_list = []
+    for recipe in recipes:
+        ingredients_list = recipe.ingredients.values_list('name', 'quantity', 'quantity_type')
+
+        recipe_info = {
+            "name": recipe.name,
+            "description": recipe.description,
+            "instructions": recipe.instructions,
+            "published": recipe.published,
+            "category": recipe.category,
+            "servings": recipe.servings,
+            "cook_time": recipe.cook_time,
+            "ingredients": [{"name": name, "quantity": quantity, "quantity_type": quantity_type} for name, quantity, quantity_type in ingredients_list],
+        }
+        recipes_list.append(recipe_info)
+
+    
+
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+        {"role": "system", "content": "You help users generate recipes based on the information they provide."},
+        {"role": "system", "content": f"Here is the recipe database as an example of how to return the recipe as an object:{recipes_list}"},
+        {"role": "system", "content": f"Here is the recipe the user wishes to create:{content}"},
+    ]
+
+
+    print('we about to send this to openai')
+
+    completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
+    print(completion.choices[0].message.content)  
+    
+    return completion.choices[0].message.content
+    
