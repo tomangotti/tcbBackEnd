@@ -8,7 +8,7 @@ from django.db.models import Avg
 
 import json
 import random
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta
@@ -827,7 +827,7 @@ class GetUsersRecipes(APIView):
 
 
 class GenerateNewRecipeRequest(APIView):
-    serializer_class = RecipesSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
         data = request.data

@@ -24,6 +24,6 @@ urlpatterns = [
     path('feed/recipes/<str:user_id>', GetFeedRecipes.as_view()),
     path('feed/slim/recipes', GetSlimFeedRecipes.as_view()),
     path('feed/v2/recipes/<str:user_id>', GetFeedRecipesV2.as_view()),
-    path('generate', GenerateNewRecipeRequest.as_view()),
+    path('generate/recipe', GenerateNewRecipeRequest.as_view()),
 ]
 
