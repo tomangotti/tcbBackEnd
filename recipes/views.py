@@ -839,7 +839,7 @@ class GenerateNewRecipeRequest(APIView):
 
 def generate_openai_recipe(content):
     print("hello from ai response")
-    print(content)
+    
     recipes = Recipes.objects.all()
     recipes_list = []
     for recipe in recipes:
@@ -864,12 +864,14 @@ def generate_openai_recipe(content):
         {"role": "system", "content": "You help users generate recipes based on the information they provide."},
         {"role": "system", "content": f"Here is the recipe database as an example of how to return the recipe as an object:{recipes_list}"},
         {"role": "system", "content": f"Here is the recipe the user wishes to create:{content}"},
+        {"role": "system", "content": "Please generate a recipe based on the information provided. and leave out any missing information but return all the information even if blank."},
+
     ]
 
 
     print('we about to send this to openai')
 
-    completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
+    completion = client.chat.completions.create(model="gpt-3.5-turbo", response_format={ "type": "json_object" }, messages=messages)
     print(completion.choices[0].message.content)  
     
     return completion.choices[0].message.content
