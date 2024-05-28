@@ -239,8 +239,8 @@ class GetFeedRecipesV2(APIView):
         )
     
     def get_not_following_users(self, user, count=5):
-        not_following_users = User.objects.exclude(following__follower=user).exclude(id=user.id)
-    
+        not_following_users = User.objects.exclude(following__follower=user)
+        
         total_users = not_following_users.count()
         if total_users <= count:
             return not_following_users
