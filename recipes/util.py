@@ -1,4 +1,4 @@
-from .serializers import RecipeSerializer
+from .serializers import RecipesSerializer
 from recipeCollections.serializer import CollectionSerializer
 from ususers.serializers import QuickGlanceSerializer
 from ususers.models import User, ProfileImage
@@ -6,7 +6,7 @@ from ususers.models import User, ProfileImage
 
 
 def transform_recipe_data(recipe_list, request):
-    serializer = RecipeSerializer(recipe_list, many=True)
+    serializer = RecipesSerializer(recipe_list, many=True)
     serializer_data = serializer.data
 
     for recipe_data in serializer_data:
