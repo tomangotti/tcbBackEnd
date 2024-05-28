@@ -240,7 +240,7 @@ class GetFeedRecipesV2(APIView):
     
     def get_not_following_users(self, user, count=5):
         not_following_users = User.objects.exclude(following__follower=user)
-        
+
         total_users = not_following_users.count()
         if total_users <= count:
             return not_following_users
@@ -270,10 +270,10 @@ class GetFeedRecipesV2(APIView):
         most_favorited_list = transform_recipe_data(most_favorited_recipes, request)
         highest_rated_list = transform_recipe_data(highest_rated_recipes, request)
         recipes_made_by_followed_users_list = transform_recipe_data(recipes_made_by_followed_users, request)
-        most_recent_collections_list = transform_collection_data(most_recent_collections, request)
-        most_favorited_collections_list = transform_collection_data(most_favorited_collections, request)
-        highest_rated_collections_list = transform_collection_data(highest_rated_collections, request)
-        collections_made_by_followed_users_list = transform_collection_data(collections_made_by_followed_users, request)
+        most_recent_collections_list = transform_collection_data(most_recent_collections)
+        most_favorited_collections_list = transform_collection_data(most_favorited_collections)
+        highest_rated_collections_list = transform_collection_data(highest_rated_collections)
+        collections_made_by_followed_users_list = transform_collection_data(collections_made_by_followed_users)
         not_following_users_list = transform_user_data(not_following_users, request)
 
         data = [
