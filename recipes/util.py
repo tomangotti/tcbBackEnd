@@ -29,7 +29,7 @@ def transform_user_data(user, request):
     serializer_data = serializer.data
 
     for user_data in serializer_data:
-        if user_data['profile_image']:
-            user_data['profile_image'] = request.build_absolute_uri(user_data['profile_image'])
+        if user_data['image']:
+            user_data['image'] = request.build_absolute_uri(user_data['image'])
 
     return serializer_data
