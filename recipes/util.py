@@ -29,7 +29,14 @@ def transform_user_data(user, request):
     serializer_data = serializer.data
 
     for user_data in serializer_data:
-        if user_data['image']:
-            user_data['image'] = request.build_absolute_uri(user_data['image'])
-
+            user_id = user_data['id']
+            try:
+                user = User.objects.get(pk=user_id)
+                if ProfileImage.objects.filter(user=user):
+                    profile_image = ProfileImage.objects.get(user=user)
+                    if profile_image.image:
+                        image_url = request.build_absolute_uri(profile_image.image.url)
+                        user_data['image'] = image_url
+            except User.DoesNotExist:
+                pass
     return serializer_data
