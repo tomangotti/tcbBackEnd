@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .models import Collections, CollectionRating
 from .serializer import CollectionSerializer, CollectionRatingSerializer
 from ususers.serializers import UserSerializer
+from recipes.serializers import RecipesSerializer
 
 
 class GetAllPublishedCollections(APIView):
@@ -66,6 +67,8 @@ class AddRecipeToCollection(APIView):
         return Response(status=status.HTTP_200_OK)
     
 class RemoveRecipeFromCollection(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get_collection(self, collection_id):
         return get_object_or_404(Collections, pk=collection_id)
 
@@ -106,6 +109,7 @@ class DeleteCollection(APIView):
         return Response(status=status.HTTP_200_OK)
     
 
+
 class GetSingleCollection(APIView):
     def get_collection(self, collection_id):
         return get_object_or_404(Collections, pk=collection_id)
@@ -115,6 +119,7 @@ class GetSingleCollection(APIView):
         serializer = CollectionSerializer(collection)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
 
 class UpdateCollection(APIView):
     def get_collection(self, collection_id):
@@ -130,6 +135,7 @@ class UpdateCollection(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
+
 class GetUsersCollectionRating(APIView):
     seriaizer_class = CollectionRatingSerializer
 
@@ -142,6 +148,7 @@ class GetUsersCollectionRating(APIView):
         else:
             return Response({'message': 'No rating found'},status=status.HTTP_200_OK)
         
+
 
 
 class AddNewRatingView(APIView):
@@ -170,3 +177,22 @@ class AddNewRatingView(APIView):
             
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class GetCollectionToBeEdited(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_collection(self, collection_id):
+        return get_object_or_404(Collections, pk=collection_id)
+
+    def get(self, request, collection_id):
+        user = request.user
+        collection = self.get_collection(collection_id)
+        serializer = CollectionSerializer(collection)
+
+        users_recipes = Recipes.objects.filter(user=user, published = True)
+        recipes_serializer = RecipesSerializer(users_recipes, many=True)
+        recipe_data = recipes_serializer.data
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

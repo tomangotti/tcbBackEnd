@@ -32,3 +32,4 @@ class CollectionRating(models.Model):
     def __str__ (self):
         return self.collection.name
 
+

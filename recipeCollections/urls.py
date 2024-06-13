@@ -15,7 +15,8 @@ urlpatterns = [
     path("update/<int:collection_id>", UpdateCollection.as_view()),
     path("<str:collection_id>/ratings/<str:user_id>", GetUsersCollectionRating.as_view()),
     path("ratings/new", AddNewRatingView.as_view()),
-    path("all", GetAllPublishedCollections.as_view())
+    path("all", GetAllPublishedCollections.as_view()),
+    
 ]
 
 
