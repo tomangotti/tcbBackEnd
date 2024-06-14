@@ -862,3 +862,22 @@ def generate_openai_recipe(content):
     
     return completion.choices[0].message.content
     
+
+
+
+class GetOwnAndFavoriteRecipes(APIView):
+    serializer_class = RecipesSerializer
+
+    def get(self, request, format=None):
+        user = request.user
+        
+        recipes = user.recipes_set.all()
+        favorite_recipes = FavoriteRecipes.objects.filter(user=user)
+        all_recipes = []
+        for recipe in recipes:
+            all_recipes.append(recipe)
+        for fav_recipe in favorite_recipes:
+            all_recipes.append(fav_recipe.recipe)
+
+        serializer = RecipesSerializer(all_recipes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
