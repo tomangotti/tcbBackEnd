@@ -26,6 +26,6 @@ urlpatterns = [
     path('feed/v2/recipes/<str:user_id>', GetFeedRecipesV2.as_view()),
     path('generate/recipe', GenerateNewRecipeRequest.as_view()),
     path('feed/v3/recipes/<str:user_id>', GetFeedRecipesV3.as_view()),
-    path('get-user-fav-recipes', GetOwnAndFavoriteRecipes.as_view())
+    path('get-user-fav-recipes/<str:user_id>', GetOwnAndFavoriteRecipes.as_view())
 ]
 
