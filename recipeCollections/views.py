@@ -128,11 +128,14 @@ class GetSingleCollection(APIView):
 
 
 class UpdateCollection(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_collection(self, collection_id):
         return get_object_or_404(Collections, pk=collection_id)
 
-    def put(self, request, collection_id):
+    def patch(self, request, collection_id):
         collection = self.get_collection(collection_id)
+        print(request.data)
         serializer = CollectionSerializer(collection, data=request.data)
         if serializer.is_valid():
             serializer.save()
