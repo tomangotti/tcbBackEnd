@@ -136,7 +136,7 @@ class UpdateCollection(APIView):
     def patch(self, request, collection_id):
         collection = self.get_collection(collection_id)
         print(request.data)
-        serializer = CollectionSerializer(collection, data=request.data)
+        serializer = CollectionSerializer(collection, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
