@@ -877,7 +877,8 @@ class GetOwnAndFavoriteRecipes(APIView):
         for recipe in recipes:
             all_recipes.append(recipe)
         for fav_recipe in favorite_recipes:
-            all_recipes.append(fav_recipe.recipe)
+            if fav_recipe.recipe not in all_recipes:
+                all_recipes.append(fav_recipe.recipe)
 
         serializer = RecipesSerializer(all_recipes, many=True)
         
