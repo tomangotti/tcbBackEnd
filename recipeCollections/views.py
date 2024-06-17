@@ -76,8 +76,14 @@ class RemoveRecipeFromCollection(APIView):
         return get_object_or_404(Recipes, pk=recipe_id)
 
     def post(self, request, collection_id, recipe_id):
+        user = request.user
+        
         collection = self.get_collection(collection_id)
         recipe = self.get_recipe(recipe_id)
+
+        if collection.user != user:
+            return Response({'message': 'You are not authorized to remove this recipe'}, status=status.HTTP_403_FORBIDDEN)
+        
         collection.recipes.remove(recipe)
         return Response(status=status.HTTP_200_OK)
     
