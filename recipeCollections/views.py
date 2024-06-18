@@ -135,13 +135,15 @@ class UpdateCollection(APIView):
 
     def patch(self, request, collection_id):
         collection = self.get_collection(collection_id)
+
+        print(collection)
         print(request.data)
+        
         serializer = CollectionSerializer(collection, data=request.data, partial=True)
+
         if serializer.is_valid():
-            serializer.save()
-            collection.name = serializer.data['name']
-            collection.description = serializer.data['description']
-            collection.save()
+            updated_collection = serializer.save()
+            print(f"updated collection: {updated_collection}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
