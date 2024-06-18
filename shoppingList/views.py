@@ -13,10 +13,9 @@ from .util import *
 # Create your views here.
 
 class GetUsersShoppingLists(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, format=None):
-        user = request.user
+    def get(self, request, user_id, format=None):
+        user = get_object_or_404(User, id=user_id)
         shopping_lists = get_users_shopping_lists(user)
 
         return Response(shopping_lists, status=status.HTTP_200_OK)
