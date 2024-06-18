@@ -16,6 +16,7 @@ urlpatterns = [
     path('social/', include("social.urls")),
     path('recipe-collections/', include("recipeCollections.urls")),
     path('favorites/', include("favorites.urls")),
+    path('shopping-list/', include("shoppingList.urls")),
 ]
 
 # if settings.DEBUG:

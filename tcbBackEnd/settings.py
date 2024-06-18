@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'social.apps.SocialConfig',
     'recipeCollections.apps.RecipecollectionsConfig',
     'favorites.apps.FavoritesConfig',
+    'shoppingList.apps.ShoppinglistConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',

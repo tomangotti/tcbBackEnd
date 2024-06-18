@@ -33,3 +33,4 @@ class CollectionRating(models.Model):
         return self.collection.name
 
 
+
