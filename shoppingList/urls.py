@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 # import shoppingList.views as views
 from .views import CreateNewShoppingList, GetUsersShoppingLists, AddNewItemToShoppingList, AddRecipeIngredientsToShopingList
 
-url_patterns = [
+urlpatterns = [
     path('create/new/shopping_list', CreateNewShoppingList.as_view()),
     path('get/users/<int:user_id>', GetUsersShoppingLists.as_view()),
     path('add/item/to/shopping_list/<int:list_id>', AddNewItemToShoppingList.as_view()),
