@@ -15,9 +15,9 @@ def create_new_shopping_list(request, user):
 
 def get_users_shopping_lists(user):
     shopping_lists = ShoppingList.objects.filter(user=user)
-    shared_Lists = SharedLists.objects.filter(user=user)
-    all_lists = shopping_lists | shared_Lists
-    serializer = ShoppingListSerializer(all_lists, many=True)
+    # shared_Lists = SharedLists.objects.filter(user=user)
+    # all_lists = shopping_lists | shared_Lists
+    serializer = ShoppingListSerializer(shopping_lists, many=True)
 
     return serializer.data
 
