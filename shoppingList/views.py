@@ -12,6 +12,7 @@ from .util import *
 
 # Create your views here.
 
+
 class GetUsersShoppingLists(APIView):
 
     def get(self, request, user_id, format=None):
