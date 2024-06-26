@@ -17,7 +17,7 @@ class ShoppingList(models.Model):
 
 class ListItems(models.Model):
     shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, related_name='items')
-    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, related_name='list_items', blank=True)
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, related_name='list_items', blank=True, null=True)
     quantity = models.CharField(max_length=50, blank=True)
     quantity_type = models.CharField(max_length=50, blank=True)
     name = models.CharField(max_length=100, blank=True)
