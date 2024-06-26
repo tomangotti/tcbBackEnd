@@ -1,5 +1,5 @@
 from .models import ShoppingList, ListItems, SharedLists
-from .serializers import ShoppingListSerializer, ListItemsSerializer, SharedListsSerializer
+from .serializers import ShoppingListSerializer, ListItemsSerializer, SharedListsSerializer, ShoppingListAndItemsSerializer
 from recipes.models import Recipes, ingredients
 from django.contrib.auth.models import User
 
@@ -29,6 +29,19 @@ def add_item_to_shopping_list(request, shopping_list):
     serializer = ListItemsSerializer(item)
     return serializer.data
 
+def remove_item_from_shopping_list(item_id):
+    item = ListItems.objects.get(id=item_id)
+    item.delete()
+
+    return True
+
+def change_item_status(item_id):
+    item = ListItems.objects.get(id=item_id)
+    item.checked = not item.checked
+    item.save()
+
+    return item
+
 
 def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
     ingredients = recipe.ingredients.all()
@@ -37,3 +50,8 @@ def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
         item.save()
     
     return item
+
+def get_shopping_list_details(list_id):
+    shopping_list = ShoppingList.objects.get(id=list_id)
+    serializer = ShoppingListAndItemsSerializer(shopping_list)
+    return serializer.data

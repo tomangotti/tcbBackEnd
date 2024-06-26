@@ -26,3 +26,12 @@ class SharedListsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharedLists
         fields = ('id', 'shopping_list', 'shopping_list_name', 'user', 'user_username')
+
+
+class ShoppingListAndItemsSerializer(serializers.ModelSerializer):
+    user_username = serializers.CharField(source='user.username', read_only=True)
+    items = ListItemsSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = ShoppingList
+        fields = ('id', 'name', 'user_username', 'user', 'items')

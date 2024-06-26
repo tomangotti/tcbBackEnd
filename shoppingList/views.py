@@ -5,7 +5,7 @@ from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 
 from .models import ShoppingList, ListItems, SharedLists
-from .serializers import ShoppingListSerializer, ListItemsSerializer, SharedListsSerializer
+from .serializers import ShoppingListSerializer, ListItemsSerializer, SharedListsSerializer, ShoppingListAndItemsSerializer
 from recipes.models import Recipes
 from django.contrib.auth.models import User
 from .util import *
@@ -56,4 +56,32 @@ class AddRecipeIngredientsToShopingList(APIView):
         item = add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe)
 
         return Response(item, status=status.HTTP_201_CREATED)
+
+
+
+class GetShoppingListDetails(APIView):
+
+    def get(self, request, list_id, format=None):
+
+        detail = get_shopping_list_details(list_id)
+
+        return Response(detail, status=status.HTTP_200_OK)
+    
+
+class DeleteShoppingListItem(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, item_id, format=None):
+        remove_item_from_shopping_list(item_id)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class ChangeItemStatus(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, item_id, format=None):
+        item = change_item_status(item_id)
+
+        return Response(item, status=status.HTTP_200_OK)
 
