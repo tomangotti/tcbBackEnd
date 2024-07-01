@@ -34,6 +34,14 @@ class CreateNewShoppingList(APIView):
         return Response(shopping_list, status=status.HTTP_201_CREATED)
     
 
+class DeleteShoppingList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, list_id, format=None):
+        user = request.user
+        delete_shopping_list(list_id, user)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AddNewItemToShoppingList(APIView):

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # import shoppingList.views as views
-from .views import GetShoppingListDetails, DeleteShoppingListItem, ChangeItemStatus, CreateNewShoppingList, GetUsersShoppingLists, AddNewItemToShoppingList, AddRecipeIngredientsToShopingList
+from .views import DeleteShoppingList, GetShoppingListDetails, DeleteShoppingListItem, ChangeItemStatus, CreateNewShoppingList, GetUsersShoppingLists, AddNewItemToShoppingList, AddRecipeIngredientsToShopingList
 
 urlpatterns = [
     path('create/new/shopping_list', CreateNewShoppingList.as_view()),
@@ -13,5 +13,6 @@ urlpatterns = [
     path('delete/item/<int:item_id>', DeleteShoppingListItem.as_view()),
     path('change/item/status/<int:item_id>', ChangeItemStatus.as_view()),
     path('get/details/<int:list_id>', GetShoppingListDetails.as_view()),
+    path('delete/shopping_list/<int:list_id>', DeleteShoppingList.as_view())
 
 ]

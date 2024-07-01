@@ -12,6 +12,15 @@ def create_new_shopping_list(request, user):
     return serialize.data
 
 
+def delete_shopping_list(user, list_id):
+    shopping_list = ShoppingList.objects.get(id=list_id)
+    if shopping_list.user != user:
+        return False
+    shopping_list.delete()
+
+    return True
+
+
 
 def get_users_shopping_lists(user):
     shopping_lists = ShoppingList.objects.filter(user=user)
