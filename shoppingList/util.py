@@ -22,6 +22,7 @@ def get_users_shopping_lists(user):
     return serializer.data
 
 
+
 def add_item_to_shopping_list(request, shopping_list):
     item = ListItems.objects.create(shopping_list=shopping_list, quantity=request.data['quantity'], quantity_type=request.data['quantity_type'], name=request.data['name'], checked=False)
     item.save()

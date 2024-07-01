@@ -12,8 +12,9 @@ class ShoppingList(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.recipe.name
+        return self.name
     
+
 
 class ListItems(models.Model):
     shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, related_name='items')
@@ -26,7 +27,7 @@ class ListItems(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.recipe.name
+        return self.name
     
 
 class SharedLists(models.Model):
@@ -36,4 +37,4 @@ class SharedLists(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.shopping
+        return self.shopping_list

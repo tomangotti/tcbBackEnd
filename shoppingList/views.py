@@ -13,6 +13,7 @@ from .util import *
 # Create your views here.
 
 
+
 class GetUsersShoppingLists(APIView):
 
     def get(self, request, user_id, format=None):
@@ -32,6 +33,7 @@ class CreateNewShoppingList(APIView):
 
         return Response(shopping_list, status=status.HTTP_201_CREATED)
     
+
 
 
 class AddNewItemToShoppingList(APIView):
