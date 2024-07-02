@@ -62,10 +62,9 @@ def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
         new_items.append(item)
     
     serializer = ListItemsSerializer(new_items, many=True)
-    if serializer.is_valid():
-        return serializer.data
-    else:
-        return False
+    
+    return serializer.data
+    
 
 def get_shopping_list_details(list_id):
     shopping_list = ShoppingList.objects.get(id=list_id)
