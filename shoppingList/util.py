@@ -54,9 +54,9 @@ def change_item_status(item_id):
 
 
 def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
-    ingredients = ingredients.objects.filter(recipe=recipe)
-    for ingredient in ingredients:
-        item = ListItems.objects.create(shopping_list=shopping_list, recipe=recipe, quantity=ingredient.quantity, quantity_type=ingredient.quantity_type, name=ingredient.name, checked=False)
+    list_items = ingredients.objects.filter(recipe=recipe)
+    for list_item in list_items:
+        item = ListItems.objects.create(shopping_list=shopping_list, recipe=recipe, quantity=list_item.quantity, quantity_type=list_item.quantity_type, name=list_item.name, checked=False)
         item.save()
     
     return item
