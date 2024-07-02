@@ -59,7 +59,9 @@ def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
         item = ListItems.objects.create(shopping_list=shopping_list, recipe=recipe, quantity=list_item.quantity, quantity_type=list_item.quantity_type, name=list_item.name, checked=False)
         item.save()
     
-    return item
+    
+
+    return True
 
 def get_shopping_list_details(list_id):
     shopping_list = ShoppingList.objects.get(id=list_id)

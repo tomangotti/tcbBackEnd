@@ -64,8 +64,10 @@ class AddRecipeIngredientsToShopingList(APIView):
         shopping_list = get_object_or_404(ShoppingList, id=list_id)
         recipe = get_object_or_404(Recipes, id=recipe_id)
         item = add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe)
-
-        return Response(item, status=status.HTTP_201_CREATED)
+        if item == False:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(status=status.HTTP_201_CREATED)
 
 
 
