@@ -55,11 +55,13 @@ def change_item_status(item_id):
 
 def add_recipe_ingredients_to_shopping_list(request, shopping_list, recipe):
     list_items = ingredients.objects.filter(recipe=recipe)
+    new_items = []
     for list_item in list_items:
         item = ListItems.objects.create(shopping_list=shopping_list, recipe=recipe, quantity=list_item.quantity, quantity_type=list_item.quantity_type, name=list_item.name, checked=False)
         item.save()
+        new_items.append(item)
     
-    serializer = ListItemsSerializer(list_items, many=True)
+    serializer = ListItemsSerializer(new_items, many=True)
     if serializer.is_valid():
         return serializer.data
     else:
